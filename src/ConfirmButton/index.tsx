@@ -1,29 +1,51 @@
-import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, ButtonProps, Popconfirm, PopconfirmProps } from 'antd';
-import React, { useCallback } from 'react';
+import React from 'react';
 
-interface ButtonWithTooltipProps extends ButtonProps {
-  popProps?: Omit<PopconfirmProps, 'onConfirm' | 'title' | 'description'>;
-  children?: React.ReactNode;
-  title?: string;
-  description?: string;
-}
+type PopProps = Omit<
+  PopconfirmProps,
+  | 'title'
+  | 'description'
+  | 'onConfirm'
+  | 'onCancel'
+  | 'okText'
+  | 'cancelText'
+  | 'showCancel'
+>;
+type PopPropsCommon = Pick<
+  PopconfirmProps,
+  Exclude<keyof PopconfirmProps, keyof PopProps>
+>;
 
-export default function ConfirmButton(props: ButtonWithTooltipProps) {
-  const { popProps, onClick, title, description, ...buttonProps } = props;
-  // @ts-ignore
-  const onConfirm = useCallback((e) => onClick?.(e), [onClick]);
+type ConfirmButtonProps = Omit<ButtonProps, 'onClick' | 'onClickCapture'> &
+  PopPropsCommon & {
+    popProps?: PopProps;
+    popTitle?: string;
+  };
+export default function ConfirmButton(props: ConfirmButtonProps) {
+  const {
+    popProps,
+    popTitle,
+    description,
+    onConfirm,
+    onCancel,
+    okText,
+    cancelText,
+    showCancel,
+    ...buttonProps
+  } = props;
+
   return (
     <Popconfirm
-      showCancel={false}
-      icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-      okType="danger"
       {...popProps}
-      onConfirm={onConfirm}
-      title={title}
+      title={popTitle}
       description={description}
+      onConfirm={onConfirm}
+      onCancel={onCancel}
+      okText={okText}
+      cancelText={cancelText}
+      showCancel={showCancel}
     >
-      <Button {...buttonProps} title={title} />
+      <Button {...buttonProps} />
     </Popconfirm>
   );
 }
