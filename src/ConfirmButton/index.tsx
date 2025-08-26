@@ -21,6 +21,7 @@ type ConfirmButtonProps = Omit<ButtonProps, 'onClick' | 'onClickCapture'> &
     popProps?: PopProps;
     popTitle?: string;
   };
+
 export default function ConfirmButton(props: ConfirmButtonProps) {
   const {
     popProps,

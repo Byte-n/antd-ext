@@ -64,9 +64,8 @@ export default () => {
 
 ## Props
 
-| 属性              | 类型                                    | 默认值 | 说明                                           |
-| ----------------- | --------------------------------------- | ------ | ---------------------------------------------- |
-| formInitialValues | `T`                                     | -      | 表单初始值，用于比较表单当前值是否有变化       |
-| tooltipProps      | `Omit<TooltipProps, 'title' \| 'open'>` | -      | Tooltip 组件的配置属性，排除 `title` 和 `open` |
-
-其余字段与 `ButtonProps` 相同，但排除了以下属性： `disabled`、`htmlType`
+| 属性              | 类型                                    | 默认值 | 说明                                                      |
+| ----------------- | --------------------------------------- | ------ | --------------------------------------------------------- |
+| formInitialValues | `T`                                     | -      | 表单初始值，用于比较表单当前值是否有变化                  |
+| tooltipProps      | `Omit<TooltipProps, 'title' \| 'open'>` | -      | Tooltip 组件的配置属性，排除 `title` 和 `open`            |
+| ...               | -                                       | -      | 继承 ButtonProps 的所有属性 排除： `disabled`、`htmlType` |
