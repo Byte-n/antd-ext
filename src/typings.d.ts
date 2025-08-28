@@ -12,17 +12,3 @@ declare module 'antd/lib/locale' {
     FormRuleBuilder?: FormRuleBuilderMessageTemplates;
   }
 }
-
-// 扩展 antd 的主题组件配置接口
-declare module 'antd/lib/drawer/style' {
-  interface ComponentToken {
-    dragColor?: string;
-  }
-}
-
-// 扩展 antd 的主题组件配置接口
-declare module 'antd/es/drawer/style' {
-  interface ComponentToken {
-    dragColor?: string;
-  }
-}

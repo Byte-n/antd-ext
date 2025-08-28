@@ -11,5 +11,6 @@ module.exports = {
         ignoreTypeReferences: false,
       },
     ],
+    '@typescript-eslint/no-empty-interface': 'off',
   },
 };

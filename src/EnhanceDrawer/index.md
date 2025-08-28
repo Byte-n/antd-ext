@@ -2,126 +2,65 @@
 
 增强的 Drawer 组件，支持拖拽调整大小功能。
 
-## 基本用法
+## 新增功能
 
-```tsx
-import { EnhanceDrawer } from 'antd-ext';
-import { Button } from 'antd';
-import { useState } from 'react';
+- **拖拽调整大小**：支持通过拖拽手柄调整抽屉的宽度或高度
+- **自定义拖拽图标**：支持自定义拖拽指示器的图标
+- **拖拽限制**：支持设置拖拽的最小和最大尺寸限制
+- **拖拽事件回调**：支持拖拽开始和结束的事件回调
+- **主题定制**：支持通过 ConfigProvider 定制拖拽指示器的样式
 
-export default () => {
-  const [open, setOpen] = useState(false);
+## 演示
 
-  return (
-    <>
-      <Button onClick={() => setOpen(true)}>打开抽屉</Button>
-      <EnhanceDrawer
-        title="可调整大小的抽屉"
-        open={open}
-        onClose={() => setOpen(false)}
-        resize={true}
-      >
-        <p>这是一个可以拖拽调整大小的抽屉</p>
-      </EnhanceDrawer>
-    </>
-  );
-};
-```
+### 基础拖拽功能
 
-## 自定义拖拽颜色
+<code src="./demo/basic.tsx">基础拖拽功能</code>
 
-### 通过 ConfigProvider 主题配置
+### 拖拽尺寸限制
 
-```tsx
-import { EnhanceDrawer } from 'antd-ext';
-import { Button, ConfigProvider } from 'antd';
-import { useState } from 'react';
+<code src="./demo/with-limits.tsx">拖拽尺寸限制</code>
 
-export default () => {
-  const [open, setOpen] = useState(false);
+### 自定义拖拽图标
 
-  return (
-    <ConfigProvider
-      theme={{
-        components: {
-          Drawer: {
-            dragColor: '#ff4d4f', // 自定义拖拽手柄颜色
-          },
-        },
-      }}
-    >
-      <Button onClick={() => setOpen(true)}>打开抽屉</Button>
-      <EnhanceDrawer
-        title="自定义拖拽颜色"
-        open={open}
-        onClose={() => setOpen(false)}
-        resize={{
-          min: 300,
-          max: 800,
-          onReSizeStart: () => console.log('开始拖拽'),
-          onReSizeEnd: () => console.log('结束拖拽'),
-        }}
-      >
-        <p>拖拽手柄会显示为红色</p>
-      </EnhanceDrawer>
-    </ConfigProvider>
-  );
-};
-```
+<code src="./demo/custom-icon.tsx">自定义拖拽图标</code>
 
-### 使用主题色
+### 拖拽事件回调
 
-```tsx
-import { EnhanceDrawer } from 'antd-ext';
-import { Button, ConfigProvider } from 'antd';
-import { useState } from 'react';
+<code src="./demo/with-events.tsx">拖拽事件回调</code>
 
-export default () => {
-  const [open, setOpen] = useState(false);
+### 不同位置拖拽
 
-  return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: '#52c41a', // 设置主题色为绿色
-        },
-      }}
-    >
-      <Button onClick={() => setOpen(true)}>打开抽屉</Button>
-      <EnhanceDrawer
-        title="使用主题色的拖拽手柄"
-        open={open}
-        onClose={() => setOpen(false)}
-        resize={true}
-      >
-        <p>拖拽手柄会使用主题色（绿色）</p>
-      </EnhanceDrawer>
-    </ConfigProvider>
-  );
-};
-```
+<code src="./demo/different-placements.tsx">不同位置拖拽</code>
 
-## API
+### 主题定制
 
-### EnhanceDrawerProps
+<code src="./demo/theme-customization.tsx">主题定制</code>
 
-| 属性   | 类型                      | 默认值 | 说明                     |
-| ------ | ------------------------- | ------ | ------------------------ |
-| resize | `boolean \| ResizeConfig` | -      | 是否启用拖拽调整大小功能 |
-| ...    | -                         | -      | 继承 Drawer 的所有属性   |
+## Props
+
+| 参数 | 说明 | 类型 | 默认值 | 版本 |
+| --- | --- | --- | --- | --- |
+| resize | 是否启用拖拽调整大小功能 | `boolean \| ResizeConfig` | `false` | - |
 
 ### ResizeConfig
 
-| 属性          | 类型         | 默认值 | 说明             |
-| ------------- | ------------ | ------ | ---------------- |
-| min           | `number`     | -      | 最小宽度/高度    |
-| max           | `number`     | -      | 最大宽度/高度    |
-| onReSizeStart | `() => void` | -      | 开始拖拽时的回调 |
-| onReSizeEnd   | `() => void` | -      | 结束拖拽时的回调 |
+| 参数 | 说明 | 类型 | 默认值 | 版本 |
+| --- | --- | --- | --- | --- |
+| min | 拖拽的最小尺寸（像素） | `number` | - | - |
+| max | 拖拽的最大尺寸（像素） | `number` | - | - |
+| onReSizeStart | 拖拽开始时的回调函数 | `() => void` | - | - |
+| onReSizeEnd | 拖拽结束时的回调函数 | `() => void` | - | - |
+| dragIcon | 自定义拖拽图标 | `React.ReactNode` | - | - |
 
-## 主题配置
+## ConfigProvider
 
-拖拽手柄的颜色优先级：
+通过 ConfigProvider 的 `theme.components.EnhanceDrawer` 可以定制拖拽指示器的样式。
 
-1. `ConfigProvider.components.Drawer.dragColor` - 最高优先级
-2. `ConfigProvider.token.colorPrimary` - 中等优先级
+### 主题配置项
+
+| 参数 | 说明 | 类型 | 默认值 | 版本 |
+| --- | --- | --- | --- | --- |
+| indicatorDraggingColor | 拖拽指示器在拖拽状态下的背景色 | `string` | `token.colorPrimaryBg` | - |
+| indicatorIconColor | 拖拽图标的颜色 | `string` | `token.colorTextSecondary` | - |
+| indicatorIconSize | 拖拽图标的大小（像素） | `number` | `16` | - |
+| indicatorIconBgColor | 拖拽图标的背景色 | `string` | `token.colorBgContainer` | - |
