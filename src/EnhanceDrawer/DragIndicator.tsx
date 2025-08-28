@@ -101,6 +101,7 @@ export default function DragIndicator(props: DragIndicatorProps) {
     customizePrefixCls,
   );
   const [wrapCSSVar, hashId, cssVarCls] = useDragIndicatorStyle(prefixCls);
+  console.log('hashId:', hashId, cssVarCls);
 
   // 根据位置选择对应的图标
   const getDragIcon = useCallback(() => {
