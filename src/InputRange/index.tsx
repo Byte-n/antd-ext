@@ -1,5 +1,5 @@
 import { InputNumber, Space } from 'antd';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 interface InputRange {
   min: number;

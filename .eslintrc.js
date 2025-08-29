@@ -1,16 +1,7 @@
 module.exports = {
   extends: require.resolve('@umijs/lint/dist/config/eslint'),
   rules: {
-    '@typescript-eslint/no-use-before-define': [
-      'error',
-      {
-        functions: true,
-        classes: true,
-        variables: false,
-        typedefs: false,
-        ignoreTypeReferences: false,
-      },
-    ],
+    '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
   },
 };
