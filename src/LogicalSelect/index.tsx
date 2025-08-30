@@ -1,5 +1,14 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, ConfigProvider, Empty, Flex, Space, Typography } from 'antd';
+import {
+  Button,
+  ConfigProvider,
+  Empty,
+  Flex,
+  Form,
+  FormItemProps,
+  Space,
+  Typography,
+} from 'antd';
 import { type EnhanceSelectProps } from 'antd-ext';
 import useStyle from './style';
 import { LogicalCondition } from './LogicalCondition';
@@ -13,10 +22,14 @@ import classNames from 'classnames';
 import React, {
   FC,
   forwardRef,
+  ForwardRefExoticComponent,
+  PropsWithoutRef,
   Ref,
+  RefAttributes,
   useCallback,
   useContext,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -130,10 +143,7 @@ function InternalLogicalSelect(props: InternalLogicalSelectValueProps) {
   const [locale] = useLocale('LogicalSelect', zhCN);
   const runtimeCtx = useContext(LogicalSelectRuntimeContext);
   const change = useCallback(
-    (
-      index: number,
-      newValue: LogicalSelectValue | LogicalSelectValueRaw,
-    ) =>
+    (index: number, newValue: LogicalSelectValue | LogicalSelectValueRaw) =>
       onChange({
         ...value,
         conditions: value.conditions.map((v, i) => {
@@ -176,7 +186,7 @@ function InternalLogicalSelect(props: InternalLogicalSelectValueProps) {
     }
     return hierarchy[level] || null;
   }, []);
-  
+
   const { componentSize } = ConfigProvider.useConfig();
   return (
     <Space
@@ -194,7 +204,11 @@ function InternalLogicalSelect(props: InternalLogicalSelectValueProps) {
             onChange={(v) => onChange({ ...value, symbol: v })}
           />
         )}
-        <Space size={componentSize} direction="vertical" className={`${prefixCls}-conditions`}>
+        <Space
+          size={componentSize}
+          direction="vertical"
+          className={`${prefixCls}-conditions`}
+        >
           {value.conditions.map((condition, index) => {
             if ((condition as LogicalSelectValue).symbol) {
               return (
@@ -575,4 +589,64 @@ const InternalLogical = (
 /**
  * 逻辑选择器
  */
-export default forwardRef<LogicalSelectRef, LogicalSelectProps>(InternalLogical)
+const LogicalSelect = forwardRef<LogicalSelectRef, LogicalSelectProps>(
+  InternalLogical,
+) as unknown as ForwardRefExoticComponent<
+  PropsWithoutRef<LogicalSelectProps> & RefAttributes<LogicalSelectRef>
+> & { FormItem: typeof LogicalConditionFormItem };
+
+export interface LogicalConditionFormItemProps
+  extends Omit<LogicalSelectProps, 'value' | 'onChange' | 'defaultValue'> {
+  name: any;
+  /** 启用自带校验（默认开启） */
+  enableValidate?: boolean;
+  /** 追加自定义表单规则 */
+  rules?: any[];
+  formItemProps?: Omit<FormItemProps<LogicalSelectValue>, 'name' | 'rules'>;
+}
+
+export const LogicalConditionFormItem = forwardRef<
+  LogicalSelectRef,
+  LogicalConditionFormItemProps
+>((props, ref) => {
+  const {
+    name,
+    enableValidate = true,
+    rules,
+    formItemProps,
+    ...rest
+  } = props as any;
+  const localRef = useRef<LogicalSelectRef>();
+  const validatorRule = useMemo(
+    () =>
+      enableValidate
+        ? [
+            {
+              validator: async () => {
+                const result = localRef.current!.validate();
+                if (!result.valid) {
+                  throw new Error(result.errors[0].message);
+                }
+              },
+            },
+          ]
+        : [],
+    [enableValidate],
+  );
+
+  useImperativeHandle(ref, () => localRef.current!);
+
+  const mergedRules = Array.isArray(rules)
+    ? [...rules, ...validatorRule]
+    : validatorRule;
+  return (
+    <Form.Item {...formItemProps} name={name} rules={mergedRules}>
+      {/* 使用内部导出的组件以避免循环依赖 */}
+      <InternalLogical {...rest} ref={localRef} />
+    </Form.Item>
+  );
+});
+
+LogicalSelect.FormItem = LogicalConditionFormItem;
+
+export default LogicalSelect;

@@ -46,12 +46,10 @@ export interface ConditionProps
 export function LogicalCondition(props: ConditionProps) {
   const {
     onChange,
-    options,
     condition,
     removeCondition,
     widgets,
     parentValue,
-    value,
     hierarchy,
     level,
     renderConditionExtra,
