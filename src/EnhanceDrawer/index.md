@@ -1,4 +1,14 @@
-# EnhanceDrawer
+---
+category: Components
+group:
+  title: 反馈
+  order: 5
+title: EnhanceDrawer
+subtitle: 增强抽屉
+description: 增强的 Drawer 组件，支持拖拽调整大小功能，提供更好的用户体验。
+---
+
+# EnhanceDrawer 增强抽屉
 
 增强的 Drawer 组件，支持拖拽调整大小功能。
 
@@ -38,19 +48,19 @@
 
 ## Props
 
-| 参数 | 说明 | 类型 | 默认值 | 版本 |
-| --- | --- | --- | --- | --- |
-| resize | 是否启用拖拽调整大小功能 | `boolean \| ResizeConfig` | `false` | - |
+| 参数   | 说明                     | 类型                      | 默认值  | 版本 |
+| ------ | ------------------------ | ------------------------- | ------- | ---- |
+| resize | 是否启用拖拽调整大小功能 | `boolean \| ResizeConfig` | `false` | -    |
 
 ### ResizeConfig
 
-| 参数 | 说明 | 类型 | 默认值 | 版本 |
-| --- | --- | --- | --- | --- |
-| min | 拖拽的最小尺寸（像素） | `number` | - | - |
-| max | 拖拽的最大尺寸（像素） | `number` | - | - |
-| onReSizeStart | 拖拽开始时的回调函数 | `() => void` | - | - |
-| onReSizeEnd | 拖拽结束时的回调函数 | `() => void` | - | - |
-| dragIcon | 自定义拖拽图标 | `React.ReactNode` | - | - |
+| 参数          | 说明                   | 类型              | 默认值 | 版本 |
+| ------------- | ---------------------- | ----------------- | ------ | ---- |
+| min           | 拖拽的最小尺寸（像素） | `number`          | -      | -    |
+| max           | 拖拽的最大尺寸（像素） | `number`          | -      | -    |
+| onReSizeStart | 拖拽开始时的回调函数   | `() => void`      | -      | -    |
+| onReSizeEnd   | 拖拽结束时的回调函数   | `() => void`      | -      | -    |
+| dragIcon      | 自定义拖拽图标         | `React.ReactNode` | -      | -    |
 
 ## ConfigProvider
 
@@ -58,9 +68,9 @@
 
 ### 主题配置项
 
-| 参数 | 说明 | 类型 | 默认值 | 版本 |
-| --- | --- | --- | --- | --- |
-| indicatorDraggingColor | 拖拽指示器在拖拽状态下的背景色 | `string` | `token.colorPrimaryBg` | - |
-| indicatorIconColor | 拖拽图标的颜色 | `string` | `token.colorTextSecondary` | - |
-| indicatorIconSize | 拖拽图标的大小（像素） | `number` | `16` | - |
-| indicatorIconBgColor | 拖拽图标的背景色 | `string` | `token.colorBgContainer` | - |
+| 参数                   | 说明                           | 类型     | 默认值                     | 版本 |
+| ---------------------- | ------------------------------ | -------- | -------------------------- | ---- |
+| indicatorDraggingColor | 拖拽指示器在拖拽状态下的背景色 | `string` | `token.colorPrimaryBg`     | -    |
+| indicatorIconColor     | 拖拽图标的颜色                 | `string` | `token.colorTextSecondary` | -    |
+| indicatorIconSize      | 拖拽图标的大小（像素）         | `number` | `16`                       | -    |
+| indicatorIconBgColor   | 拖拽图标的背景色               | `string` | `token.colorBgContainer`   | -    |

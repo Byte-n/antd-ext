@@ -1,10 +1,20 @@
-# LoadingIndicatorCircusBall
+---
+category: Components
+group:
+  title: 反馈
+  order: 5
+title: LoadingIndicatorCircusBall
+subtitle: 马戏团加载指示器
+description: 一个有趣的马戏团风格加载指示器，包含5个彩色小球的动画效果，为应用增添趣味性和视觉吸引力。
+---
 
-一个有趣的马戏团风格加载指示器，包含5个彩色小球的动画效果。
+# LoadingIndicatorCircusBall 马戏团加载指示器
+
+一个有趣的马戏团风格加载指示器，包含 5 个彩色小球的动画效果。
 
 ## 功能特性
 
-- **马戏团风格动画**：5个彩色小球进行跳跃和移动的动画效果
+- **马戏团风格动画**：5 个彩色小球进行跳跃和移动的动画效果
 - **多种尺寸**：支持 small、default、large 三种尺寸
 - **Spin 集成**：可作为 Ant Design Spin 组件的自定义指示器
 - **主题定制**：支持通过 ConfigProvider 定制小球颜色
@@ -30,9 +40,9 @@
 
 ## Props
 
-| 参数 | 说明 | 类型 | 默认值 | 版本 |
-| --- | --- | --- | --- | --- |
-| size | 加载指示器的尺寸 | `'small' \| 'default' \| 'large'` | `'default'` | - |
+| 参数 | 说明             | 类型                              | 默认值      | 版本 |
+| ---- | ---------------- | --------------------------------- | ----------- | ---- |
+| size | 加载指示器的尺寸 | `'small' \| 'default' \| 'large'` | `'default'` | -    |
 
 ## ConfigProvider
 
@@ -40,18 +50,18 @@
 
 ### 主题配置项
 
-| 参数 | 说明 | 类型 | 默认值 | 版本 |
-| --- | --- | --- | --- | --- |
-| ballShadowColor | 小球阴影颜色 | `string` | `'rgba(0, 0, 0, 0.1)'` | - |
-| ball1Color | 小球1颜色 | `string` | `'#397BF9'` | - |
-| ball2Color | 小球2颜色 | `string` | `'#F4B400'` | - |
-| ball3Color | 小球3颜色 | `string` | `'#EEEEEE'` | - |
-| ball4Color | 小球4颜色 | `string` | `'#00A656'` | - |
-| ball5Color | 小球5颜色 | `string` | `'#E3746B'` | - |
+| 参数            | 说明         | 类型     | 默认值                 | 版本 |
+| --------------- | ------------ | -------- | ---------------------- | ---- |
+| ballShadowColor | 小球阴影颜色 | `string` | `'rgba(0, 0, 0, 0.1)'` | -    |
+| ball1Color      | 小球 1 颜色  | `string` | `'#397BF9'`            | -    |
+| ball2Color      | 小球 2 颜色  | `string` | `'#F4B400'`            | -    |
+| ball3Color      | 小球 3 颜色  | `string` | `'#EEEEEE'`            | -    |
+| ball4Color      | 小球 4 颜色  | `string` | `'#00A656'`            | -    |
+| ball5Color      | 小球 5 颜色  | `string` | `'#E3746B'`            | -    |
 
 ## 设计说明
 
-LoadingIndicatorCircusBall 组件模拟了马戏团中杂技演员的表演，5个不同颜色的小球代表不同的演员，它们通过精心设计的动画序列创造出跳跃、移动的视觉效果。
+LoadingIndicatorCircusBall 组件模拟了马戏团中杂技演员的表演，5 个不同颜色的小球代表不同的演员，它们通过精心设计的动画序列创造出跳跃、移动的视觉效果。
 
 ### 动画特点
 

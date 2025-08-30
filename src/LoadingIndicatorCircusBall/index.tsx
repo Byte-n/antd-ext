@@ -16,7 +16,7 @@ export default function LoadingIndicatorCircusBall(
   const { getPrefixCls } = useContext(ConfigContext);
   const prefixCls = getPrefixCls('LoadingIndicatorCircusBall');
   const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
-  console.log('cssVarCls:', hashId);
+
   return wrapCSSVar(
     <Flex justify="center" align="center" className="size-full">
       <div className={classNames(prefixCls, cssVarCls, hashId, size)}>

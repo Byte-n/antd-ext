@@ -1,4 +1,4 @@
-import { ConfigProvider, Select, Table } from 'antd';
+import { ConfigProvider, Table } from 'antd';
 import { LoadingIndicatorCircusBall } from 'antd-ext';
 import React from 'react';
 
@@ -19,6 +19,11 @@ export default () => (
     spin={{ indicator: <LoadingIndicatorCircusBall /> }}
   >
     <div>表格加载</div>
-    <Table dataSource={[{title: 'title'}]} loading columns={[{ title: 'Title', key: 'title' }]} />
+    <Table
+      dataSource={[{ title: 'title' }]}
+      rowKey="title"
+      loading
+      columns={[{ title: 'Title', key: 'title' }]}
+    />
   </ConfigProvider>
 );
