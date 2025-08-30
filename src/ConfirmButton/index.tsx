@@ -16,13 +16,13 @@ type PopPropsCommon = Partial<Pick<
   Exclude<keyof PopconfirmProps, keyof PopProps>
 >>;
 
-type ConfirmButtonProps = Omit<ButtonProps, 'onClick' | 'onClickCapture'> &
+export type ConfirmButtonProps = Omit<ButtonProps, 'onClick' | 'onClickCapture'> &
   PopPropsCommon & {
     popProps?: PopProps;
     popTitle?: string;
   };
 
-interface ConfirmButtonRef extends HTMLButtonElement {
+export interface ConfirmButtonRef extends HTMLButtonElement {
   getPopRef: () => React.RefObject<any> | null;
 }
 

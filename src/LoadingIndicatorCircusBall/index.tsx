@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React, { useContext } from 'react';
 import useStyle from './useStyle';
 
-interface LoadingIndicatorCircusBallProps {
+export interface LoadingIndicatorCircusBallProps {
   size?: 'small' | 'default' | 'large';
 }
 

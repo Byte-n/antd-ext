@@ -1,6 +1,6 @@
 ---
 description:
-globs: ["components/*/style/index.ts", "src/typings.d.ts"]
+globs: ["src/*/style/index.ts", "src/typings.d.ts"]
 alwaysApply: false
 ---
 # 样式规范
@@ -20,7 +20,7 @@ alwaysApply: false
 
 ## Typescript类型定义
 
-- 类型定义在`components/*/style/index.ts`中：`export interface ComponentToken { ... }`
+- 类型定义在`src/*/style/index.ts`中：`export interface ComponentToken { ... }`
 - 在 `src/typings.d.ts` 中的 `declare module 'antd/es/theme/interface/components'` 中的 `ComponentTokenMap` 下记录对应组件的组件token
 
 ## 在组件中使用

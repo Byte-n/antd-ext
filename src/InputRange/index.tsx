@@ -1,7 +1,7 @@
-import { InputNumber, Space, InputNumberProps } from 'antd';
+import { InputNumber, Space } from 'antd';
 import React, { useCallback, useMemo, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 
-interface InputRangeProps {
+export interface InputRangeProps {
   min: number;
   max: number;
   value?: VT;

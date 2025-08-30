@@ -8,7 +8,6 @@ alwaysApply: false
 ## 基本要求
 
 - 提供中英文两个版本
-- 新的属性需要声明可用的版本号
 - 属性命名符合 antd 的 API 命名规则：https://github.com/ant-design/ant-design/wiki/API-Naming-rules
 
 ## Changelog 规范
@@ -45,7 +44,6 @@ alwaysApply: false
 
 # 文档规范
 
-- 新属性需声明可用的版本号
 - 属性命名符合 API 命名规则
 - 组件文档包含：使用场景、基础用法、API 说明
 - 文档示例应简洁明了

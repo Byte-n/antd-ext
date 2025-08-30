@@ -4,7 +4,7 @@ import { useLocale } from 'antd/es/locale';
 import React, { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { zhCN } from './locale';
 
-interface SubmitButtonProps<T = unknown>
+export interface SubmitButtonProps<T = unknown>
   extends Omit<ButtonProps, 'disabled' | 'htmlType'> {
   /**
    * 若表单values中的值与{formInitialValues}的差异，若无差异，则不允许提交
