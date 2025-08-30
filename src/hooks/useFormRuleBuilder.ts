@@ -1,9 +1,9 @@
-import { useLocale } from 'antd/lib/locale';
+import { useLocale } from 'antd/es/locale';
 import { useMemo } from 'react';
 import {
   defaultFormRuleBuilderMessageTemplates,
   FormRuleBuilder,
-} from '../formRule';
+} from '../utils';
 
 /**
  * FormRuleBuilder 的 Hook 版本

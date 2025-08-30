@@ -1,7 +1,7 @@
-import { InputNumber, Space } from 'antd';
-import React, { useCallback, useMemo, useState } from 'react';
+import { InputNumber, Space, InputNumberProps } from 'antd';
+import React, { useCallback, useMemo, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 
-interface InputRange {
+interface InputRangeProps {
   min: number;
   max: number;
   value?: VT;
@@ -11,7 +11,29 @@ interface InputRange {
 
 type VT = [number, number];
 
-export default ({ min, max, value, onChange, defaultValue }: InputRange) => {
+export interface InputRangeRef {
+  getLowerInput: () => HTMLInputElement | null;
+  getUpperInput: () => HTMLInputElement | null;
+  focus: () => void;
+  blur: () => void;
+}
+
+const InputRange = forwardRef<InputRangeRef, InputRangeProps>(
+  ({ min, max, value, onChange, defaultValue }, ref) => {
+    const lowerInputRef = useRef<HTMLInputElement>(null);
+    const upperInputRef = useRef<HTMLInputElement>(null);
+
+    useImperativeHandle(ref, () => ({
+      getLowerInput: () => lowerInputRef.current,
+      getUpperInput: () => upperInputRef.current,
+      focus: () => {
+        lowerInputRef.current?.focus();
+      },
+      blur: () => {
+        lowerInputRef.current?.blur();
+        upperInputRef.current?.blur();
+      },
+    }));
   // 判断是否处于受控模式
   const isControlled = value !== undefined;
 
@@ -49,6 +71,7 @@ export default ({ min, max, value, onChange, defaultValue }: InputRange) => {
   return (
     <Space>
       <InputNumber
+        ref={lowerInputRef}
         value={currentValue[0]}
         onChange={(v) => update([v, currentValue[1]])}
         min={min}
@@ -56,6 +79,7 @@ export default ({ min, max, value, onChange, defaultValue }: InputRange) => {
       />
       <span>~</span>
       <InputNumber
+        ref={upperInputRef}
         value={currentValue[1]}
         onChange={(v) => update([currentValue[0], v])}
         min={min}
@@ -63,4 +87,9 @@ export default ({ min, max, value, onChange, defaultValue }: InputRange) => {
       />
     </Space>
   );
-};
+  },
+);
+
+InputRange.displayName = 'InputRange';
+
+export default InputRange;

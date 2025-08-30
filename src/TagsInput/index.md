@@ -44,6 +44,13 @@
 
 <code src="./demo/batch-input.tsx"></code>
 
+### 本地化
+
+展示如何使用 ConfigProvider 配置 TagsInput 组件的本地化文本，支持中英文切换。
+
+<code src="./demo/localization.tsx"></code>
+
+
 ### TextOrNumericList
 
 TextOrNumericList 是一个特殊的组件，可以输入单个文本或数字，当输入数字时按回车可切换到标签模式。
@@ -81,6 +88,33 @@ TextOrNumericList 组件的 API。
 | onChange | 值变化时的回调 | `(value: string \| number[]) => void` | - | - |
 | tagsInputProps | 传递给 TagsInput 的属性 | `Omit<TagsInputProps<'numeric'>, 'defaultValue' \| 'value' \| 'onChange' \| 'type' \| 'style' \| 'className'>` | - | - |
 | placeholder | 输入框占位文本 | `string` | `'输入ID或名称，输入ID时，回车可切换输入模式'` | - |
+
+## 本地化
+
+TagsInput 组件支持通过 ConfigProvider 进行本地化配置，可配置的文本包括：
+
+| 文本键 | 说明 | 默认值 |
+| --- | --- | --- |
+| placeholder | 输入框占位文本 | `'按回车新增'` |
+| batchInput | 批量输入提示文本 | `'批量输入'` |
+| clearAll | 清空所有提示文本 | `'清空所有'` |
+| confirm | 确认按钮文本 | `'确定'` |
+| cancel | 取消按钮文本 | `'取消'` |
+| rows | 行数文本 | `'行数'` |
+| maxCountLimit | 最大数量限制提示 | `'最大数量限制：${maxCount}个'` |
+| maxCountLimitIgnore | 最大数量限制忽略提示 | `'最大数量限制：${maxCount}个, 忽略超出部分'` |
+| maxCountLimitTruncated | 最大数量限制截取提示 | `'最大数量限制：${maxCount}个，已自动截取前${maxCount}个'` |
+| invalidNumber | 无效数字提示 | `'请输入有效的数字'` |
+| duplicateItem | 重复项提示 | `'已有: ${item}'` |
+| duplicateItemRemoved | 重复项移除提示 | `'已移除重复的项：${items}, 若需要提交，重新点击确定'` |
+| invalidNumberRow | 无效数字行提示 | `"'${text}'行不是有效数字"` |
+| numericTypeHint | 数字类型提示 | `'数字'` |
+| textTypeHint | 文本类型提示 | `'文本'` |
+| enterToSwitchMode | 切换模式提示 | `'回车可切换输入模式'` |
+| inputIdOrName | 输入ID或名称提示 | `'输入ID或名称，输入ID时，回车可切换输入模式'` |
+| dynamicPlaceholder | 动态占位符文本 | `'一行一个${typeHint}，最多${maxCount}个'` |
+| ellipsisCount | 省略号计数文本 | `'...${count}个'` |
+
 
 ## 主题定制
 

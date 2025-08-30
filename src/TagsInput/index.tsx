@@ -13,6 +13,7 @@ import {
   Typography,
 } from 'antd';
 import { SizeType } from 'antd/es/config-provider/SizeContext';
+import { useLocale } from 'antd/es/locale';
 import classNames from 'classnames';
 import React, {
   ClipboardEventHandler,
@@ -24,8 +25,10 @@ import React, {
 } from 'react';
 import useComponentFactory, {
   UseComponentProps,
-} from '../lib/hooks/useComponentFactory';
-import useStyle from './useStyle';
+} from '../hooks/useComponentFactory';
+import useStyle from './style';
+import usePrevious from 'antd/es/typography/hooks/usePrevious';
+import { zhCN } from 'antd-ext/TagsInput/locale';
 
 export type TagType<T extends 'text' | 'numeric'> = T extends 'numeric'
   ? number
@@ -60,11 +63,12 @@ export interface TagsInputProps<T extends 'text' | 'numeric' = 'text'> {
  */
 function TagsInput<T extends 'text' | 'numeric' = 'text'>(
   props: TagsInputProps<T>,
-): JSX.Element {
+) {
+  const [locale] = useLocale('TagsInput', zhCN);
   const {
     className,
     style,
-    placeholder = '按回车新增',
+    placeholder = locale.placeholder,
     value,
     defaultValue = [],
     onChange,
@@ -129,7 +133,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
       if (type === 'numeric') {
         const numValue = Number(trimmedInput);
         if (Number.isNaN(numValue)) {
-          setInputTooltipTitle('请输入有效的数字');
+          setInputTooltipTitle(locale.invalidNumber);
           return false;
         }
         tagValue = numValue as TagType<T>;
@@ -138,12 +142,16 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
       }
 
       if (realValue.includes(tagValue)) {
-        setInputTooltipTitle(`已有: ${currentInput}`);
+        setInputTooltipTitle(
+          locale.duplicateItem.replace('${item}', currentInput),
+        );
         return false;
       }
 
       if (realValue.length >= maxCount) {
-        setInputTooltipTitle(`最大数量限制：${maxCount}个`);
+        setInputTooltipTitle(
+          locale.maxCountLimit.replace('${maxCount}', maxCount.toString()),
+        );
         return false;
       }
 
@@ -190,7 +198,12 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
       let list = typeof realValue === 'string' ? ids : [...realValue, ...ids];
       list = Array.from(new Set(list));
       if (realValue.length >= maxCount) {
-        setInputTooltipTitle(`最大数量限制：${maxCount}个, 忽略超出部分`);
+        setInputTooltipTitle(
+          locale.maxCountLimitIgnore.replace(
+            '${maxCount}',
+            maxCount.toString(),
+          ),
+        );
         list = list.slice(0, maxCount);
       }
       updateTags(list);
@@ -261,13 +274,16 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
           // 处理省略号对象
           if (typeof tag === 'object' && tag.type === 'ellipsis') {
             return (
-              <Tooltip key={`ellipsis-${index}`} title="批量输入">
+              <Tooltip key={`ellipsis-${index}`} title={locale.batchInput}>
                 <Tag
                   color="blue"
                   className="tag-item ellipsis-tag"
                   onClick={showEditModal}
                 >
-                  ...{tag.count}个
+                  {locale.ellipsisCount.replace(
+                    '${count}',
+                    tag.count.toString(),
+                  )}
                 </Tag>
               </Tooltip>
             );
@@ -302,7 +318,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
           suffix={
             <Space size={size}>
               {realValue.length > 0 && (
-                <Tooltip title="清空所有">
+                <Tooltip title={locale.clearAll}>
                   <Button
                     type="text"
                     size="small"
@@ -311,7 +327,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
                   />
                 </Tooltip>
               )}
-              <Tooltip title="批量输入">
+              <Tooltip title={locale.batchInput}>
                 <Button
                   type="text"
                   size="small"
@@ -345,6 +361,7 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
     size?: SizeType;
   },
 ) {
+  const [locale] = useLocale('TagsInput', zhCN);
   const {
     onClose,
     onFinished,
@@ -359,8 +376,11 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
   const [rowCount, setRowCount] = useState(0);
 
   // 动态生成占位符文本
-  const typeHint = type === 'numeric' ? '数字' : '文本';
-  const dynamicPlaceholder = `一行一个${typeHint}，最多${maxCount}个`;
+  const typeHint =
+    type === 'numeric' ? locale.numericTypeHint : locale.textTypeHint;
+  const dynamicPlaceholder = locale.dynamicPlaceholder
+    .replace('${typeHint}', typeHint)
+    .replace('${maxCount}', maxCount.toString());
 
   const handleConfirm = useCallback(
     (showTips?: boolean) => {
@@ -374,7 +394,7 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
       const repeat = data.filter((v, i, arr) => arr.indexOf(v) !== i);
       if (repeat.length) {
         message.warning(
-          `已移除重复的项：${repeat.join(',')}, 若需要提交，重新点击确定`,
+          locale.duplicateItemRemoved.replace('${items}', repeat.join(',')),
         );
         check(data.filter((v, i, arr) => arr.indexOf(v) === i).join('\n'));
         return;
@@ -413,7 +433,10 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
 
         if (invalidIndex !== -1) {
           hasError = true;
-          errorMessage = `'${numRows[invalidIndex].text}'行不是有效数字`;
+          errorMessage = locale.invalidNumberRow.replace(
+            '${text}',
+            numRows[invalidIndex].text,
+          );
           setText(inputText);
         } else {
           processedRows = numRows.map((v) => v.num) as TagType<T>[];
@@ -431,7 +454,12 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
       }
 
       if (rows.length > maxCount) {
-        setError(`超过最大数量限制：${maxCount}个，已自动截取前${maxCount}个`);
+        setError(
+          locale.maxCountLimitTruncated.replace(
+            '${maxCount}',
+            maxCount.toString(),
+          ),
+        );
         setText(
           rows.slice(0, maxCount).join('\n') + (lastChar === '\n' ? '\n' : ''),
         );
@@ -476,13 +504,18 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
           style={{ width: '100%' }}
         >
           <Typography.Text>
-            行数：{rowCount}/{maxCount}
+            {locale.rowsCountInfo
+              .replace('${rows}', locale.rows)
+              .replace('${rowCount}', rowCount.toString())
+              .replace('${maxCount}', maxCount.toString())}
           </Typography.Text>
           <Flex justify="end">
             <Space size={size}>
-              <Button onClick={handleConfirm.bind(null, false)}>取消</Button>
+              <Button onClick={handleConfirm.bind(null, false)}>
+                {locale.cancel}
+              </Button>
               <Button type="primary" onClick={handleConfirm.bind(null, true)}>
-                确定
+                {locale.confirm}
               </Button>
             </Space>
           </Flex>
@@ -516,6 +549,7 @@ TagsInput.TextOrNumericList = TextOrNumericList;
  * @constructor
  */
 function TextOrNumericList(props: TextOrNumericListProps) {
+  const [locale] = useLocale('TagsInput', zhCN);
   const {
     value,
     defaultValue,
@@ -523,7 +557,7 @@ function TextOrNumericList(props: TextOrNumericListProps) {
     className,
     style,
     tagsInputProps,
-    placeholder,
+    placeholder = locale.inputIdOrName,
     ...rest
   } = props;
 
@@ -535,12 +569,19 @@ function TextOrNumericList(props: TextOrNumericListProps) {
   const realValue = isControlled ? value : inputValue;
 
   const [autoFocus, setAutoFocus] = useState(false);
+  const prevValue = usePrevious(realValue);
   const inputOnChange = useCallback(
     (v: TextOrNumericListValue) => {
       let realValue: TextOrNumericListValue = v;
-      if (!realValue?.length) {
-        realValue = '';
-        if (!autoFocus) {
+      if (Array.isArray(realValue)) {
+        if (!realValue.length) {
+          realValue = '';
+          if (!autoFocus) {
+            setAutoFocus(true);
+          }
+        }
+      } else {
+        if (!Array.isArray(prevValue)) {
           setAutoFocus(true);
         }
       }
@@ -549,7 +590,7 @@ function TextOrNumericList(props: TextOrNumericListProps) {
       }
       onChange?.(realValue);
     },
-    [isControlled, onChange, autoFocus],
+    [isControlled, onChange, autoFocus, prevValue],
   );
 
   const handleKeyDown = useCallback(
@@ -600,14 +641,14 @@ function TextOrNumericList(props: TextOrNumericListProps) {
         value={realValue}
         defaultValue={defaultValue as number[]}
         onChange={inputOnChange}
-        inputProps={{ autoFocus: true, ...tagsInputProps?.inputProps }}
+        inputProps={{ autoFocus, ...tagsInputProps?.inputProps }}
       />
     );
   }
 
   const isNaNInput = Boolean(realValue) && !Number.isNaN(Number(realValue));
   return (
-    <Tooltip open={isNaNInput} title="回车可切换输入模式">
+    <Tooltip open={isNaNInput} title={locale.enterToSwitchMode}>
       <Input
         {...rest}
         className={className}

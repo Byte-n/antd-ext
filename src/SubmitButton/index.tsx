@@ -1,7 +1,8 @@
 import { Button, ButtonProps, Form, Tooltip } from 'antd';
-import { TooltipProps } from 'antd/es/tooltip';
-import { Locale, useLocale } from 'antd/lib/locale';
-import React, { useEffect, useState } from 'react';
+import { TooltipProps, TooltipRef } from 'antd/es/tooltip';
+import { useLocale } from 'antd/es/locale';
+import React, { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
+import { zhCN } from './locale';
 
 interface SubmitButtonProps<T = unknown>
   extends Omit<ButtonProps, 'disabled' | 'htmlType'> {
@@ -12,64 +13,86 @@ interface SubmitButtonProps<T = unknown>
   tooltipProps?: Omit<TooltipProps, 'title' | 'open'>;
 }
 
-const localText: Locale['SubmitButton'] = {
-  noChange: '未有更改',
-  formExpired: '表单已过期',
-};
+export interface SubmitButtonRef extends HTMLButtonElement {
+  getTooltipRef: () => TooltipRef | null;
+}
 
 /**
  * 提交按钮
  * @constructor
  */
-export default function SubmitButton<T = unknown>(props: SubmitButtonProps<T>) {
-  const { formInitialValues, tooltipProps, children, ...rest } = props;
-  const [locale] = useLocale('SubmitButton', localText);
-  const [submittable, setSubmittable] = React.useState<boolean>(false);
-  const formInstance = Form.useFormInstance();
-  const values = Form.useWatch([], formInstance);
-  const [error, setError] = useState<string>('');
+const SubmitButton = forwardRef<SubmitButtonRef, SubmitButtonProps<unknown>>(
+  function SubmitButton<T = unknown>(props: SubmitButtonProps<T>, ref: React.ForwardedRef<SubmitButtonRef>) {
+    const { formInitialValues, tooltipProps, children, ...rest } = props;
+    const [locale] = useLocale('SubmitButton', zhCN);
+    const [submittable, setSubmittable] = React.useState<boolean>(false);
+    const formInstance = Form.useFormInstance();
+    const values = Form.useWatch([], formInstance);
+    const [error, setError] = useState<string>('');
 
-  useEffect(() => {
-    formInstance
-      .validateFields()
-      .then((values) => {
-        if (formInitialValues) {
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const tooltipRef = useRef<TooltipRef>(null);
+
+    useImperativeHandle(ref, () => {
+      if (!buttonRef.current) {
+        return null as any;
+      }
+
+      return {
+        ...buttonRef.current,
+        getTooltipRef: () => tooltipRef.current,
+      };
+    });
+
+    useEffect(() => {
+      formInstance
+        .validateFields()
+        .then((values) => {
+          if (formInitialValues) {
+            setSubmittable(true);
+            return;
+          }
+          if (
+            JSON.stringify(formInitialValues) ===
+            JSON.stringify({ ...formInitialValues, ...values })
+          ) {
+            setSubmittable(false);
+            setError(locale.noChange);
+            return;
+          }
           setSubmittable(true);
-          return;
-        }
-        if (
-          JSON.stringify(formInitialValues) ===
-          JSON.stringify({ ...formInitialValues, ...values })
-        ) {
+        })
+        .catch(({ errorFields, outOfDate }) => {
           setSubmittable(false);
-          setError(locale.noChange);
-          return;
-        }
-        setSubmittable(true);
-      })
-      .catch(({ errorFields, outOfDate }) => {
-        setSubmittable(false);
-        if (outOfDate) {
-          setError(locale.formExpired);
-        } else {
-          setError(errorFields[0].errors[0]);
-        }
-      });
-  }, [formInstance, values, formInitialValues]);
-  return (
-    <Tooltip
-      {...tooltipProps}
-      title={error}
-      open={submittable ? false : undefined}
-    >
-      <Button
-        type="primary"
-        {...rest}
-        htmlType="submit"
-        disabled={!submittable}
+          if (outOfDate) {
+            setError(locale.formExpired);
+          } else {
+            setError(errorFields[0].errors[0]);
+          }
+        });
+    }, [formInstance, values, formInitialValues]);
+
+    return (
+      <Tooltip
+        ref={tooltipRef}
+        {...tooltipProps}
+        title={error}
+        open={submittable ? false : undefined}
       >
-        {children}
-      </Button>
-    </Tooltip>
-  );
-}
+        <Button
+          ref={buttonRef}
+          type="primary"
+          {...rest}
+          htmlType="submit"
+          disabled={!submittable}
+        >
+          {children}
+        </Button>
+      </Tooltip>
+    );
+  },
+);
+
+SubmitButton.displayName = 'SubmitButton';
+
+export default SubmitButton;

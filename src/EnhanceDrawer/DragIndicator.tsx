@@ -1,6 +1,6 @@
 import { DragOutlined, VerticalAlignMiddleOutlined } from '@ant-design/icons';
 import { ConfigProvider, DrawerProps } from 'antd';
-import useDragIndicatorStyle from 'antd-ext/EnhanceDrawer/useDragIndicatorStyle';
+import useStyle from './style';
 import classNames from 'classnames';
 import React, {
   useCallback,
@@ -100,8 +100,7 @@ export default function DragIndicator(props: DragIndicatorProps) {
     'drawer-dragging-indicator',
     customizePrefixCls,
   );
-  const [wrapCSSVar, hashId, cssVarCls] = useDragIndicatorStyle(prefixCls);
-  console.log('hashId:', hashId, cssVarCls);
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
 
   // 根据位置选择对应的图标
   const getDragIcon = useCallback(() => {

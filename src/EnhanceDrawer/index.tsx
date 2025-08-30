@@ -27,17 +27,17 @@ export default (props: EnhanceDrawerProps) => {
   } = props;
 
   const configContext = useContext(ConfigProvider.ConfigContext);
-  const prefixCls = configContext.getPrefixCls('drawer', customizePrefixCls);
-  const rootClass = useRef(`drawer-root-${incr++}`);
+  const drawerPrefixCls = configContext.getPrefixCls('drawer');
+  const rootClass = useRef(`enhance-drawer-root-${incr++}`);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const getWrapperElement = useCallback(() => {
     if (!wrapperRef.current) {
       wrapperRef.current = document
         .getElementsByClassName(rootClass.current)[0]
-        .querySelector(`.${prefixCls}-content-wrapper`);
+        .querySelector(`.${drawerPrefixCls}-content-wrapper`);
     }
     return wrapperRef.current!;
-  }, [prefixCls]);
+  }, [drawerPrefixCls]);
 
   const onRDragStart = useCallback(() => {
     getWrapperElement().style.transition = 'none';
@@ -86,7 +86,7 @@ export default (props: EnhanceDrawerProps) => {
   return (
     <Drawer
       {...rest}
-      prefixCls={prefixCls}
+      prefixCls={drawerPrefixCls}
       rootClassName={classNames(rootClassName, rootClass.current)}
       placement={placement}
       drawerRender={(node) => {

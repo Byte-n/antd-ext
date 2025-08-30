@@ -7,13 +7,7 @@ import {
   mergeToken,
 } from 'antd/es/theme/internal';
 
-declare module 'antd/es/theme/interface/components' {
-  interface ComponentTokenMap {
-    TagsInput?: ComponentToken;
-  }
-}
-
-interface ComponentToken {
+export interface ComponentToken {
   /** 标签最大宽度 */
   tagMaxWidth: number;
   /** 小尺寸内边距 */

@@ -7,13 +7,7 @@ import {
   mergeToken,
 } from 'antd/es/theme/internal';
 
-declare module 'antd/es/theme/interface/components' {
-  interface ComponentTokenMap {
-    EnhanceDrawer?: ComponentToken;
-  }
-}
-
-interface ComponentToken {
+export interface ComponentToken {
   /** 拖拽指示器在拖拽状态下的背景色 */
   indicatorDraggingColor?: string;
   /** 拖拽图标的颜色 */
