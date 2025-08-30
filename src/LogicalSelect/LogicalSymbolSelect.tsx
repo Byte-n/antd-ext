@@ -1,13 +1,18 @@
 import { ConfigProvider, Flex, Segmented, theme } from 'antd';
 import { SegmentedProps } from 'antd/es/segmented';
 import React from 'react';
+import { useLocale } from 'antd/es/locale';
+import { zhCN } from './locale';
 
 export type LogicalSymbol = 'and' | 'or';
 
-const LogicalSelectOptions = [
-  { value: 'and', label: '且' },
-  { value: 'or', label: '或' },
-] as { value: LogicalSymbol; label: string }[];
+const useOptions = () => {
+  const [locale] = useLocale('LogicalSelect', zhCN);
+  return [
+    { value: 'and', label: locale.andLabel },
+    { value: 'or', label: locale.orLabel },
+  ] as { value: LogicalSymbol; label: string }[];
+};
 
 /**
  * 逻辑符号选择器
@@ -23,6 +28,7 @@ export default ({
 }) => {
   const { componentDisabled } = ConfigProvider.useConfig();
   const { token } = theme.useToken();
+  const dis = disabled || componentDisabled;
   return (
     <Flex
       justify="center"
@@ -34,7 +40,7 @@ export default ({
         theme={{
           components: {
             Segmented: {
-              itemSelectedBg: token.colorPrimary,
+              itemSelectedBg: dis ? token.colorPrimaryBg : token.colorPrimary,
               trackBg: token.colorBgContainer,
               itemColor: token.colorBgSpotlight,
               itemSelectedColor: token.colorWhite,
@@ -44,10 +50,10 @@ export default ({
         }}
       >
         <Segmented<LogicalSymbol>
-          disabled={disabled || componentDisabled}
+          disabled={dis}
           size="small"
           vertical
-          options={LogicalSelectOptions}
+          options={useOptions()}
           value={value}
           onChange={onChange}
         />

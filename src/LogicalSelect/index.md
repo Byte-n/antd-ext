@@ -41,6 +41,12 @@ description: 一个功能强大的逻辑条件构建组件，支持复杂的条�
 
 <code src="./demo/complex-logic.tsx"></code>
 
+### 非受控模式
+
+不传 `value`，仅传入 `defaultValue`，组件内部自行管理状态：
+
+<code src="./demo/non-controlled.tsx"></code>
+
 ### 自定义组件
 
 通过 widgets 属性可以注册自定义组件，扩展条件值的输入方式。
@@ -54,14 +60,14 @@ description: 一个功能强大的逻辑条件构建组件，支持复杂的条�
 * `hierarchy = 0`：不允许嵌套，只能添加简单条件
 * `hierarchy = 1`：允许一层嵌套，可以创建逻辑分组
 * `hierarchy = 2`：允许两层嵌套，根 > 子 > 孙
-* `hierarchy = \['and', 'or']`：固定逻辑关系，根级别 AND，子级别 OR
-* `hierarchy = \['and', null, 'or']`：混合控制，根级别 AND，子级别可选，孙级别 OR
+* `hierarchy = ['and', 'or']`：固定逻辑关系，根级别 AND，子级别 OR
+* `hierarchy = ['and', null, 'or']`：混合控制，根级别 AND，子级别可选，孙级别 OR
 
 <code src="./demo/hierarchy-control.tsx"></code>
 
 ### 验证机制
 
-LogicalSelect 提供了内置的验证机制，确保每个条件都有完整的配置。
+LogicalSelect 会在初始化、外部 value 变更以及内部值变更时自动触发一次校验；校验通过一次性遍历整棵规则树完成，并将错误按“路径”下发到子节点，保证动态 `options`（函数）场景下的正确性。同时支持在 `LogicalSelectOption` 中提供 `verification(value, rootValue, condition)`，用于高级值校验；未提供时，空值（null/undefined/空串）将视为校验失败。
 
 <code src="./demo/validation.tsx"></code>
 
@@ -70,6 +76,12 @@ LogicalSelect 提供了内置的验证机制，确保每个条件都有完整的
 通过函数形式的 options 属性，可以根据当前条件动态返回不同的选项配置。
 
 <code src="./demo/dynamic-options.tsx"></code>
+
+### 本地化
+
+通过 ConfigProvider 注入 `locale.LogicalSelect` 覆盖文案：
+
+<code src="./demo/localization.tsx"></code>
 
 
 
@@ -86,7 +98,8 @@ LogicalSelect 提供了内置的验证机制，确保每个条件都有完整的
 | widgets         | 自定义组件映射    | `Record<string, FC<LogicalSelectWidgetProps<unknown>>>`                  | -        | -  |
 | hierarchy       | 层级控制       | `number \| (LogicalSymbol \| null)[]`                                    | -        | -  |
 | disabled        | 是否禁用       | `boolean`                                                                | `false`  | -  |
-| validateTrigger | 验证触发时机     | `'none' \| 'change'`                                                     | `'none'` | -  |
+| onValidate      | 验证回调         | `(result: { valid: boolean; errors: { path: number[]; code: string; message: string }[] }) => void` | - | - |
+| size            | 组件尺寸        | `'small' \| 'middle' \| 'large'`                                         | 继承 ConfigProvider | - |
 | renderEmpty     | 空状态渲染函数    | `() => React.ReactNode`                                                  | -        | -  |
 | className       | 自定义类名      | `string`                                                                 | -        | -  |
 | style           | 自定义样式      | `CSSProperties`                                                          | -        | -  |
@@ -101,6 +114,7 @@ LogicalSelect 提供了内置的验证机制，确保每个条件都有完整的
 | disabled | 是否禁用 | `boolean` | `false` | - |
 | widget | 使用的组件类型 | `string \| FC<LogicalSelectWidgetProps<unknown>>` | - | - |
 | widgetProps | 传递给组件的属性 | `Record<string, unknown>` | - | - |
+| verification | 自定义值校验 | `(value: unknown, rootValue: LogicalSelectValue, condition: LogicalSelectValueRaw) => boolean` | - | - |
 | selectProps | 传递给 Select 的属性 | `Omit<EnhanceSelectProps, 'showSearch' \| 'options' \| 'value' \| 'onChange'>` | - | - |
 | conditionTypeOptions | 条件类型选项 | `(LogicalSelectConditionTypeEnum \| ConditionTypeOptionsObject)[]` | - | - |
 
@@ -133,8 +147,7 @@ LogicalSelect 提供了内置的验证机制，确保每个条件都有完整的
 
 | 参数       | 说明    | 类型                                 | 默认值 | 版本 |
 |----------|-------|------------------------------------|-----|----|
-| validate | 验证方法  | `() => boolean`                    | -   | -  |
-| getValue | 获取值方法 | `() => LogicalSelectValue \| null` | -   | -  |
+| validate | 触发校验并返回结果  | `() => ValidateResult`            | -   | -  |
 
 ## 条件类型枚举
 
@@ -161,6 +174,18 @@ LogicalSelect 内置了以下默认组件：
 - `InputNumber`: 数字输入框 - 对应 Ant Design 的 `InputNumber` 组件
 - `InputRange`: 范围输入框 - 对应 `InputRange` 组件
 - `Select`: 选择器 - 对应 `EnhanceSelect` 组件
+ 
+## 本地化
+
+LogicalSelect 支持 antd 的本地化系统。可通过 ConfigProvider 设置 `locale.LogicalSelect` 来覆盖默认文案。默认文案见 `src/LogicalSelect/locale`。
+
+涉及文案：
+- 新增按钮文本（add）
+- 分组为空错误（emptyGroupError）
+- 字段/运算符占位（selectFieldFirst/selectOperatorFirst）
+- 值为空错误提示（valueEmptyError）
+- 禁用新增提示（addChildDisabledTip）
+- AND/OR 标签（andLabel/orLabel）
 
 ## 主题定制
 

@@ -7,6 +7,7 @@ import { ComponentToken as EnhanceDrawerComponentToken } from './EnhanceDrawer/s
 import { ComponentToken as EnhanceSelectComponentToken } from './EnhanceSelect/style';
 import { ComponentToken as LogicalSelectComponentToken } from './LogicalSelect/style';
 import { TagsInputLocale } from 'antd-ext/TagsInput/locale';
+import { LogicalSelectLocale } from 'antd-ext/LogicalSelect/locale';
 
 // 扩展 antd 的 Locale 接口
 declare module 'antd/es/locale' {
@@ -14,6 +15,7 @@ declare module 'antd/es/locale' {
     SubmitButton?: SubmitButtonLocale;
     FormRuleBuilder?: FormRuleBuilderMessageTemplates;
     TagsInput?: TagsInputLocale;
+    LogicalSelect?: LogicalSelectLocale;
   }
 }
 

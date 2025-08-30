@@ -1,10 +1,12 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, ConfigProvider, Flex, Space, Typography } from 'antd';
+import { Button, ConfigProvider, Empty, Flex, Space, Typography } from 'antd';
 import { type EnhanceSelectProps } from 'antd-ext';
 import useStyle from './style';
 import { LogicalCondition } from './LogicalCondition';
 import {
-  getConditionDefaultValue, ConditionTypeOptionsObject, LogicalSelectConditionTypeEnum,
+  ConditionTypeOptionsObject,
+  getConditionDefaultValue,
+  LogicalSelectConditionTypeEnum,
 } from './conditionType';
 import { LogicalSelectDefaultWidgets } from './widget';
 import classNames from 'classnames';
@@ -19,8 +21,11 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { cloneDeep } from '../utils/object';
+import { cloneDeep, isNil } from '../utils/object';
 import LogicalSymbolSelect, { LogicalSymbol } from './LogicalSymbolSelect';
+import { useLocale } from 'antd/es/locale';
+import { zhCN } from './locale';
+import { SizeType } from 'antd/es/config-provider/SizeContext';
 
 export interface InternalLogicalSelectValueProps {
   options:
@@ -30,14 +35,16 @@ export interface InternalLogicalSelectValueProps {
         value: LogicalSelectValue,
       ) => LogicalSelectOption[]);
   value: LogicalSelectValue;
-  onChange: (
-    value: LogicalSelectValue | LogicalSelectValueRaw,
-  ) => void;
+  onChange: (value: LogicalSelectValue | LogicalSelectValueRaw) => void;
   removeCondition?: () => void;
   widgets: Record<string, FC<LogicalSelectWidgetProps>>;
   isRoot?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  /**
+   * 当前节点路径，根为 []，第 i 条为 [i]，依次类推
+   */
+  path: number[];
   /**
    * 控制逻辑选择器的层级，<br/>
    * hierarchy = 0 ，则表示不允许添加子条件<br/>
@@ -48,18 +55,24 @@ export interface InternalLogicalSelectValueProps {
    */
   hierarchy?: number | (LogicalSymbol | null)[];
   level: number;
-  renderConditionExtra?: (
-    value: LogicalSelectValueRaw,
-  ) => React.ReactNode;
-  prefixCls: string,
+  renderConditionExtra?: (value: LogicalSelectValueRaw) => React.ReactNode;
+  prefixCls: string;
 }
 
 export interface LogicalSelectOption {
   label: string;
   value: string;
   disabled?: boolean;
-  widget?: string | FC<LogicalSelectWidgetProps<unknown>>;
+  widget?: string | FC<LogicalSelectWidgetProps>;
   widgetProps?: Record<string, unknown>;
+  /**
+   * 可选：自定义值校验（优先级高于默认非空校验）
+   */
+  verification?: (
+    value: unknown,
+    rootValue: LogicalSelectValue,
+    condition: LogicalSelectValueRaw,
+  ) => boolean;
   selectProps?: Omit<
     EnhanceSelectProps<string>,
     'showSearch' | 'options' | 'value' | 'onChange'
@@ -90,6 +103,7 @@ export interface LogicalSelectWidgetProps<T = unknown>
   disabled?: boolean;
   onChange: (value: T) => void;
   className?: string;
+  size?: SizeType;
 }
 
 /**
@@ -106,12 +120,15 @@ function InternalLogicalSelect(props: InternalLogicalSelectValueProps) {
     isRoot,
     className,
     style,
+    path,
     hierarchy,
     level,
     renderConditionExtra,
     prefixCls,
   } = props;
   const { componentDisabled } = ConfigProvider.useConfig();
+  const [locale] = useLocale('LogicalSelect', zhCN);
+  const runtimeCtx = useContext(LogicalSelectRuntimeContext);
   const change = useCallback(
     (
       index: number,
@@ -129,9 +146,16 @@ function InternalLogicalSelect(props: InternalLogicalSelectValueProps) {
     [onChange, value],
   );
   const addCondition = useCallback(() => {
-    const def = getConditionDefaultValue(options, value);
+    const optionList = runtimeCtx.getOptions(path);
+    const sourceOptions =
+      optionList && optionList.length
+        ? optionList
+        : typeof options === 'function'
+        ? options({}, value)
+        : options;
+    const def = getConditionDefaultValue(sourceOptions, value);
     onChange({ ...value, conditions: value.conditions.concat([def]) });
-  }, [onChange, value]);
+  }, [onChange, value, runtimeCtx, path, options]);
   const removeSonCondition = useCallback(
     (index: number) => {
       const conditions = value.conditions.filter((_, i) => i !== index);
@@ -152,8 +176,11 @@ function InternalLogicalSelect(props: InternalLogicalSelectValueProps) {
     }
     return hierarchy[level] || null;
   }, []);
+  
+  const { componentSize } = ConfigProvider.useConfig();
   return (
     <Space
+      size={componentSize}
       direction="vertical"
       className={className}
       style={{ width: '100%', ...style }}
@@ -167,7 +194,7 @@ function InternalLogicalSelect(props: InternalLogicalSelectValueProps) {
             onChange={(v) => onChange({ ...value, symbol: v })}
           />
         )}
-        <Space size={3} direction="vertical" className={`${prefixCls}-conditions`}>
+        <Space size={componentSize} direction="vertical" className={`${prefixCls}-conditions`}>
           {value.conditions.map((condition, index) => {
             if ((condition as LogicalSelectValue).symbol) {
               return (
@@ -182,6 +209,7 @@ function InternalLogicalSelect(props: InternalLogicalSelectValueProps) {
                   options={options}
                   onChange={change.bind(null, index)}
                   removeCondition={removeSonCondition.bind(null, index)}
+                  path={path.concat(index)}
                 />
               );
             }
@@ -194,14 +222,14 @@ function InternalLogicalSelect(props: InternalLogicalSelectValueProps) {
                 parentValue={value}
                 widgets={widgets}
                 key={
-                  (condition as LogicalSelectValueRaw)?.key +
-                  index.toString()
+                  (condition as LogicalSelectValueRaw)?.key + index.toString()
                 }
                 condition={condition as LogicalSelectValueRaw}
                 onChange={change.bind(null, index)}
                 value={value}
                 options={options}
                 removeCondition={removeSonCondition.bind(null, index)}
+                path={path.concat(index)}
               />
             );
           })}
@@ -214,7 +242,7 @@ function InternalLogicalSelect(props: InternalLogicalSelectValueProps) {
           variant="text"
           onClick={addCondition}
         >
-          添加
+          {locale.add}
         </Button>
       )}
     </Space>
@@ -224,164 +252,325 @@ function InternalLogicalSelect(props: InternalLogicalSelectValueProps) {
 const EMPTY: LogicalSelectValue = { symbol: 'and', conditions: [{}] };
 
 export interface LogicalSelectRef {
-  validate: () => boolean;
-  getValue: () => LogicalSelectValue | null;
+  validate: () => ValidateResult;
 }
 
 export interface LogicalSelectProps
   extends Omit<
     InternalLogicalSelectValueProps,
-    'level' | 'removeCondition' | 'onChange' | 'value' | 'isRoot' | 'prefixCls' | 'widgets'
+    | 'level'
+    | 'removeCondition'
+    | 'onChange'
+    | 'value'
+    | 'isRoot'
+    | 'prefixCls'
+    | 'widgets'
+    | 'path'
   > {
   onChange?: (value: LogicalSelectValue | null) => void;
   value?: LogicalSelectValue | null;
   defaultValue?: LogicalSelectValue | null;
-  validateTrigger?: 'none' | 'change';
   // onRemoveRootCondition?: () => void;
   disabled?: boolean;
   renderEmpty?: () => React.ReactNode;
   prefixCls?: string;
-  widgets?: InternalLogicalSelectValueProps['widgets']
+  widgets?: InternalLogicalSelectValueProps['widgets'];
+  onValidate?: (result: ValidateResult) => void;
+  size?: SizeType
 }
 
-export const LogicalSelectValidateContext = React.createContext(
-  (_: () => boolean): VoidFunction =>
-    () =>
-      void 0,
-);
+export interface ErrorItem {
+  code: string;
+  message: string;
+}
 
-const InternalLogical = (props: LogicalSelectProps, ref: Ref<LogicalSelectRef>) => {
-    const {
-      widgets,
-      value,
-      defaultValue,
-      onChange,
-      options,
-      validateTrigger,
-      className,
-      disabled,
-      renderEmpty,
-      prefixCls: customizePrefixCls,
-      ...rest
-    } = props;
-    const widgetsObj = useMemo<
-      Record<string, FC<LogicalSelectWidgetProps>>
-    >(() => ({ ...LogicalSelectDefaultWidgets, ...widgets }), [widgets]);
-    const [val, setVal] = useState<LogicalSelectValue | null>(
-      value || defaultValue || null,
-    );
+export interface ValidateResult {
+  valid: boolean;
+  errors: Array<{ path: number[]; code: string; message: string }>;
+  errorsByPath: Record<string, ErrorItem[]>;
+}
 
-    const isControlled = value !== undefined;
-    const realValue = isControlled ? value : val;
+// 内部使用的校验元信息（包含 optionsByPath）
+export interface ValidateMeta extends ValidateResult {
+  optionsByPath: Record<string, LogicalSelectOption[]>;
+}
 
-    const onValueChange = useCallback(
-      (v: LogicalSelectValue | LogicalSelectValueRaw) => {
-        if (!isControlled) {
-          setVal(v as LogicalSelectValue);
-        }
-        onChange?.(v as LogicalSelectValue);
-        if (validateTrigger === 'change') {
-          setValidateIdx((i) => i + 1);
-        }
-      },
-      [onChange, validateTrigger, isControlled],
-    );
+export const LogicalSelectRuntimeContext = React.createContext<{
+  getOptions: (path: number[]) => LogicalSelectOption[];
+  getErrors: (path: number[]) => ErrorItem[] | undefined;
+}>({
+  getOptions: () => [],
+  getErrors: () => undefined,
+});
 
-    const validateListRef = React.useRef<(() => boolean)[]>([]);
-    const addValidateRef = useRef((v: () => boolean) => {
-      validateListRef.current.push(v);
-      return () => {
-        validateListRef.current = validateListRef.current.filter(
-          (i) => i !== v,
-        );
-      };
-    });
-    const validate = useRef(() => validateListRef.current.every((v) => v()));
-    React.useImperativeHandle(
-      ref,
-      () => ({
-        validate: validate.current,
-        getValue: () => realValue,
-      }),
-      [],
-    );
-    const [validateIdx, setValidateIdx] = useState(0);
-    useEffect(() => {
-      validate.current();
-    }, [validateIdx]);
+function isGroup(
+  v: LogicalSelectValue | LogicalSelectValueRaw,
+): v is LogicalSelectValue {
+  return (v as LogicalSelectValue).symbol !== undefined;
+}
 
-    const onRemoveRootCondition = useCallback(() => {
-      setVal(null);
-      onChange?.(null);
-    }, []);
+function pathKey(path: number[]): string {
+  return path.join('.');
+}
 
-    const addCondition = useCallback(() => {
-      const lv = cloneDeep(EMPTY);
-      lv.conditions[0] = getConditionDefaultValue(options, lv);
-      if (!isControlled) {
-        setVal(lv);
-      }
-      onChange?.(lv);
-    }, [onChange]);
-    const { componentDisabled } = ConfigProvider.useConfig();
-    const emptyNode = useMemo(() => {
-      if (realValue) {
-        return null;
-      }
-      const node = renderEmpty ? renderEmpty() : '规则为空';
-      if (typeof node === 'object') {
-        return node;
-      }
-      return <Typography.Text type="secondary">{node}</Typography.Text>;
-    }, [renderEmpty, realValue]);
+function getOptionList(
+  options:
+    | LogicalSelectOption[]
+    | ((
+        condition: LogicalSelectValueRaw,
+        value: LogicalSelectValue,
+      ) => LogicalSelectOption[]),
+  cond: LogicalSelectValueRaw,
+  root: LogicalSelectValue,
+): LogicalSelectOption[] {
+  return typeof options === 'function' ? options(cond, root) : options;
+}
 
-    const configContext = useContext(ConfigProvider.ConfigContext);
-    const prefixCls = configContext.getPrefixCls(
-      'logical-select',
-      customizePrefixCls,
-    );
-    const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
+export function validateTree(
+  root: LogicalSelectValue | null | undefined,
+  options:
+    | LogicalSelectOption[]
+    | ((
+        condition: LogicalSelectValueRaw,
+        value: LogicalSelectValue,
+      ) => LogicalSelectOption[]),
+): ValidateMeta {
+  const optionsByPath: Record<string, LogicalSelectOption[]> = {};
+  const errorsByPath: Record<string, ErrorItem[]> = {};
+  const errors: Array<{ path: number[]; code: string; message: string }> = [];
 
-    if (!realValue) {
-      return wrapCSSVar(
-        <Space
-          direction="vertical"
-          className={classNames(prefixCls, hashId, cssVarCls, className)}
-        >
-          {emptyNode}
-          {!disabled && (
-            <Button
-              color="primary"
-              size="small"
-              variant="text"
-              onClick={addCondition}
-            >
-              <PlusOutlined style={{ fontSize: '12px' }} />
-              添加
-            </Button>
-          )}
-        </Space>,
+  if (!root) {
+    return { valid: true, errors, errorsByPath, optionsByPath } as ValidateMeta;
+  }
+
+  const walk = (
+    node: LogicalSelectValue | LogicalSelectValueRaw,
+    path: number[],
+  ) => {
+    if (isGroup(node)) {
+      const group = node as LogicalSelectValue;
+      // 为分组节点也记录一份可用于新增子条件的选项列表
+      const k = pathKey(path);
+      const groupOpts = getOptionList(
+        options,
+        {} as LogicalSelectValueRaw,
+        root,
       );
+      optionsByPath[k] = groupOpts;
+      if (!Array.isArray(group.conditions) || group.conditions.length === 0) {
+        const item = { path, code: 'empty-group', message: '分组不能为空' };
+        errors.push(item);
+        errorsByPath[k] = (errorsByPath[k] || []).concat([
+          { code: item.code, message: item.message },
+        ]);
+      }
+      group.conditions.forEach((child, i) =>
+        walk(child as any, path.concat(i)),
+      );
+      return;
     }
+    const cond = node as LogicalSelectValueRaw;
+    const k = pathKey(path);
+    // 解析选项
+    const opts = getOptionList(options, cond, root);
+    optionsByPath[k] = opts;
+
+    // 结构校验
+    if (isNil(cond.key)) {
+      const item = { path, code: 'missing-key', message: '未选择字段' };
+      errors.push(item);
+      errorsByPath[k] = (errorsByPath[k] || []).concat([
+        { code: item.code, message: item.message },
+      ]);
+    }
+    if (isNil(cond.conditionType)) {
+      const item = { path, code: 'missing-operator', message: '未选择运算符' };
+      errors.push(item);
+      errorsByPath[k] = (errorsByPath[k] || []).concat([
+        { code: item.code, message: item.message },
+      ]);
+    }
+
+    // 值校验（优先使用 widgetProps.verification）
+    const opt = opts?.find((o) => o.value === cond.key);
+    const verifier = opt?.verification as
+      | ((
+          value: unknown,
+          rootValue: LogicalSelectValue,
+          condition: LogicalSelectValueRaw,
+        ) => boolean)
+      | undefined;
+    const isEmpty = (v: unknown) => v === '' || isNil(v);
+    const valueOk = verifier
+      ? verifier(cond.value, root, cond)
+      : !isEmpty(cond.value);
+    if (!valueOk) {
+      const item = { path, code: 'invalid-value', message: '值不合法' };
+      errors.push(item);
+      errorsByPath[k] = (errorsByPath[k] || []).concat([
+        { code: item.code, message: item.message },
+      ]);
+    }
+  };
+
+  walk(root, []);
+  return { valid: errors.length === 0, errors, errorsByPath, optionsByPath } as ValidateMeta;
+}
+
+const InternalLogical = (
+  props: LogicalSelectProps,
+  ref: Ref<LogicalSelectRef>,
+) => {
+  const {
+    widgets,
+    value,
+    defaultValue,
+    onChange,
+    options,
+    className,
+    disabled,
+    renderEmpty,
+    prefixCls: customizePrefixCls,
+    size,
+    ...rest
+  } = props;
+  const widgetsObj = useMemo<Record<string, FC<LogicalSelectWidgetProps>>>(
+    () => ({ ...LogicalSelectDefaultWidgets, ...widgets }),
+    [widgets],
+  );
+
+  const isControlled = value !== undefined;
+
+  const [val, setVal] = useState<LogicalSelectValue | null>(
+    (isControlled ? value : defaultValue) || null,
+  );
+
+  const realValue = isControlled ? value : val;
+
+  const [optionsByPath, setOptionsByPath] = useState<
+    Record<string, LogicalSelectOption[]>
+  >({});
+  const [errorsByPath, setErrorsByPath] = useState<Record<string, ErrorItem[]>>(
+    {},
+  );
+
+  const doValidate = useCallback((): ValidateResult => {
+    const meta = validateTree(realValue, options);
+    setOptionsByPath(meta.optionsByPath);
+    setErrorsByPath(meta.errorsByPath);
+    const result: ValidateResult = {
+      valid: meta.valid,
+      errors: meta.errors,
+      errorsByPath: meta.errorsByPath,
+    };
+    props.onValidate?.(result);
+    return result;
+  }, [realValue, options]);
+
+  const onValueChange = useCallback(
+    (v: LogicalSelectValue | LogicalSelectValueRaw) => {
+      if (!isControlled) {
+        setVal(v as LogicalSelectValue);
+      }
+      onChange?.(v as LogicalSelectValue);
+    },
+    [onChange, isControlled, doValidate],
+  );
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      validate: () => doValidate(),
+    }),
+    [doValidate, realValue],
+  );
+
+  const onRemoveRootCondition = useCallback(() => {
+    setVal(null);
+    onChange?.(null);
+  }, []);
+
+  const addCondition = useCallback(() => {
+    const lv = cloneDeep(EMPTY);
+    lv.conditions[0] = getConditionDefaultValue(options, lv);
+    if (!isControlled) {
+      setVal(lv);
+    }
+    onChange?.(lv);
+  }, [onChange]);
+  const { componentDisabled } = ConfigProvider.useConfig();
+  const emptyNode = useMemo(() => {
+    if (realValue) {
+      return null;
+    }
+    const node = renderEmpty ? renderEmpty() : <Empty />;
+    if (typeof node === 'object') {
+      return node;
+    }
+    return <Typography.Text type="secondary">{node}</Typography.Text>;
+  }, [renderEmpty, realValue]);
+
+  const configContext = useContext(ConfigProvider.ConfigContext);
+  const prefixCls = configContext.getPrefixCls(
+    'logical-select',
+    customizePrefixCls,
+  );
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
+
+  const prevControlledValueRef = useRef<LogicalSelectValue | null>();
+  useEffect(() => {
+    if (realValue !== prevControlledValueRef.current) {
+      prevControlledValueRef.current = realValue;
+      doValidate();
+    }
+  }, [realValue, doValidate]);
+
+  if (isNil(realValue)) {
     return wrapCSSVar(
-      <ConfigProvider componentDisabled={disabled || componentDisabled}>
-        <LogicalSelectValidateContext.Provider value={addValidateRef.current}>
-          <InternalLogicalSelect
-            {...rest}
-            prefixCls={prefixCls}
-            options={options}
-            className={classNames(prefixCls, hashId, cssVarCls, className)}
-            widgets={widgetsObj}
-            value={realValue}
-            onChange={onValueChange}
-            removeCondition={onRemoveRootCondition}
-            isRoot={true}
-            level={0}
-          />
-        </LogicalSelectValidateContext.Provider>
-      </ConfigProvider>,
+      <Space
+        direction="vertical"
+        className={classNames(prefixCls, hashId, cssVarCls, className)}
+      >
+        {emptyNode}
+        {!disabled && (
+          <Button
+            color="primary"
+            size="small"
+            variant="text"
+            onClick={addCondition}
+          >
+            <PlusOutlined style={{ fontSize: '12px' }} />
+            添加
+          </Button>
+        )}
+      </Space>,
     );
   }
+  return wrapCSSVar(
+    <ConfigProvider componentDisabled={disabled || componentDisabled} componentSize={size}>
+      <LogicalSelectRuntimeContext.Provider
+        value={{
+          getOptions: (p: number[]) => optionsByPath[p.join('.')] || [],
+          getErrors: (p: number[]) => errorsByPath[p.join('.')],
+        }}
+      >
+        <InternalLogicalSelect
+          {...rest}
+          prefixCls={prefixCls}
+          options={options}
+          className={classNames(prefixCls, hashId, cssVarCls, className)}
+          widgets={widgetsObj}
+          value={realValue}
+          onChange={onValueChange}
+          removeCondition={onRemoveRootCondition}
+          isRoot={true}
+          level={0}
+          path={[]}
+        />
+      </LogicalSelectRuntimeContext.Provider>
+    </ConfigProvider>,
+  );
+};
 
 /**
  * 逻辑选择器

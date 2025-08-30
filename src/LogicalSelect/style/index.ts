@@ -89,6 +89,10 @@ const createStyle: GenerateStyle<LogicalSelectToken> = (
           position: 'relative',
           zIndex: 10,
           fontSize: 12,
+
+          [`${antCls}-segmented-item-label`]: {
+            paddingInline: 2
+          }
         },
       },
 

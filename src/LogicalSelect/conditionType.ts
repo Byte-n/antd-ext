@@ -109,16 +109,13 @@ export function parseConditionTypeOptions(
 }
 
 export function getConditionDefaultValue(
-  options:
-    | LogicalSelectOption[]
-    | ((
-        condition: LogicalSelectValueRaw,
-        value: LogicalSelectValue,
-      ) => LogicalSelectOption[]),
+  options: LogicalSelectOption[] |
+    ((condition: LogicalSelectValueRaw, value: LogicalSelectValue) => LogicalSelectOption[]),
   value: LogicalSelectValue,
 ): LogicalSelectValueRaw {
-  const optionList =
-    typeof options === 'function' ? options({}, value) : options;
+  const optionList = Array.isArray(options)
+    ? options
+    : options({}, value);
   const find = optionList.find((v) => !v.disabled);
   if (find) {
     const { conditionTypeOptions } = parseConditionTypeOptions(

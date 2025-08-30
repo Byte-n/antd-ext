@@ -4,11 +4,14 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 import { Button, ConfigProvider, Flex, Tooltip } from 'antd';
+import { useLocale } from 'antd/es/locale';
+import { zhCN } from './locale';
+import { SizeType } from 'antd/es/config-provider/SizeContext';
 import { EnhanceInput, EnhanceSelect } from 'antd-ext';
 import {
   InternalLogicalSelectValueProps,
   LogicalSelectOption,
-  LogicalSelectValidateContext,
+  LogicalSelectRuntimeContext,
   LogicalSelectValue,
   LogicalSelectValueRaw,
   LogicalSelectWidgetProps,
@@ -53,12 +56,11 @@ export function LogicalCondition(props: ConditionProps) {
     level,
     renderConditionExtra,
     prefixCls,
+    path,
   } = props;
-
-  const optionList = useMemo(
-    () => (typeof options === 'function' ? options(condition, value) : options),
-    [condition, options, value],
-  );
+  const runtimeCtx = useContext(LogicalSelectRuntimeContext);
+  const [locale] = useLocale('LogicalSelect', zhCN);
+  const optionList = runtimeCtx.getOptions(path);
 
   const addCondition = useCallback(
     () => onChange({ symbol: 'or', conditions: [condition, {}] }),
@@ -95,25 +97,13 @@ export function LogicalCondition(props: ConditionProps) {
     [onChange],
   );
   const [visButton, setVisButton] = useState(false);
-  const addValidate = useContext(LogicalSelectValidateContext);
   const [valid, setValid] = useState(true);
   useEffect(() => {
-    if (!valid) {
-      setValid(true);
-    }
-    return addValidate(() => {
-      const v = (condition as LogicalSelectValueRaw).value;
-      const { key, conditionType } = condition;
-      const temp = !(
-        v === '' ||
-        isNil(v) ||
-        isNil(key) ||
-        isNil(conditionType)
-      );
-      setValid(temp);
-      return temp;
-    });
-  }, [JSON.stringify(condition)]);
+    // 从 Context 读取错误
+    const errs = runtimeCtx.getErrors(path);
+    const hasError = Array.isArray(errs) && errs.length > 0;
+    setValid(!hasError);
+  }, [runtimeCtx, path, condition]);
 
   const optionInfo = useMemo<LogicalSelectOption>(() => {
     const find = optionList.find((v) => v.value === condition.key);
@@ -176,6 +166,7 @@ export function LogicalCondition(props: ConditionProps) {
   }, [widgets, optionList, optionInfo, condition]);
 
   const { componentDisabled } = ConfigProvider.useConfig();
+  const { componentSize } = ConfigProvider.useConfig();
   return (
     <Flex
       gap={3}
@@ -194,6 +185,7 @@ export function LogicalCondition(props: ConditionProps) {
           optionInfo?.selectProps?.className,
         )}
         showSearch
+        size={componentSize}
         options={optionList}
         value={condition.key}
         onChange={changeOption}
@@ -204,14 +196,16 @@ export function LogicalCondition(props: ConditionProps) {
         disabled={!condition.key || componentDisabled}
         className={`${prefixCls}-condition-type`}
         onChange={updateConditionType}
+        size={componentSize}
         value={conditionType}
         options={conditionTypeOptions}
         popupClassName={`${prefixCls}-condition-type-popup`}
-        placeholder={condition.key ? null : '先选条件'}
+        placeholder={condition.key ? null : locale.selectFieldFirst}
       />
       {conditionType ? (
         <Comp
           {...compProps}
+          size={componentSize}
           disabled={componentDisabled}
           condition={condition}
           className={classNames(
@@ -230,7 +224,7 @@ export function LogicalCondition(props: ConditionProps) {
             { empty: isEmpty(condition.value) },
             optionInfo?.widgetProps?.className as string,
           )}
-          placeholder="先选运算符"
+          placeholder={locale.selectOperatorFirst}
         />
       )}
       {!valid && (
@@ -241,14 +235,14 @@ export function LogicalCondition(props: ConditionProps) {
           wrap="nowrap"
         >
           <ExclamationCircleOutlined style={{ fontSize: '12px' }} />
-          不能为空
+          {locale.valueEmptyError}
         </Flex>
       )}
       {allowAddSon &&
         valid &&
         visButton &&
         (parentValue.conditions.length <= 1 ? (
-          <Tooltip title="上级仅一个条件，不允许次级再增加">
+          <Tooltip title={locale.addChildDisabledTip}>
             <Button
               disabled
               color="primary"
