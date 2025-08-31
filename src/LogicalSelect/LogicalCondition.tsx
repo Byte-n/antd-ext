@@ -6,7 +6,6 @@ import {
 import { Button, ConfigProvider, Flex, Tooltip } from 'antd';
 import { useLocale } from 'antd/es/locale';
 import { zhCN } from './locale';
-import { SizeType } from 'antd/es/config-provider/SizeContext';
 import { EnhanceInput, EnhanceSelect } from 'antd-ext';
 import {
   InternalLogicalSelectValueProps,

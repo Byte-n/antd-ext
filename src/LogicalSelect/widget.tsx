@@ -1,7 +1,7 @@
 import { InputNumber } from 'antd';
 import React, { FC } from 'react';
-import { EnhanceInput, EnhanceSelect, InputRange } from '../index';
-import { LogicalSelectWidgetProps } from './index';
+import { EnhanceInput, EnhanceSelect, InputRange } from 'antd-ext';
+import { LogicalSelectWidgetProps } from 'antd-ext';
 
 const Input: FC<LogicalSelectWidgetProps<string>> = ({ value, onChange }) => (
   <EnhanceInput value={value} onValueChange={onChange} />

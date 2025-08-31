@@ -8,6 +8,6 @@ export { default as LoadingIndicatorCircusBall, type LoadingIndicatorCircusBallP
 export { default as TagsInput, type TagsInputProps } from './TagsInput';
 export {
   default as LogicalSelect,type  LogicalSelectOption, type LogicalSelectProps,
-  type LogicalSelectRef, type LogicalSelectValue, type LogicalSelectWidgetProps
+  type LogicalSelectRef, type LogicalSelectValue, type LogicalSelectWidgetProps, type LogicalSelectValueRaw
 } from './LogicalSelect';
 export { LogicalSelectConditionTypeEnum } from './LogicalSelect/conditionType';

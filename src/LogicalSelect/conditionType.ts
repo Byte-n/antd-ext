@@ -2,8 +2,8 @@ import {
   LogicalSelectOption,
   LogicalSelectValue,
   LogicalSelectValueRaw, LogicalSelectWidgetProps,
-} from './index';
-import { cloneDeep } from '../utils/object';
+} from 'antd-ext';
+import { cloneDeep } from 'antd-ext/utils/object';
 import { FC } from 'react';
 
 export interface ConditionTypeOptionsObject {

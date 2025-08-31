@@ -29,3 +29,11 @@ export function isEmpty(v: unknown) {
 export function cloneDeep<T>(v: T): T {
   return JSON.parse(JSON.stringify(v)) as T;
 }
+
+/**
+ * is objected && !isNil
+ * @param v
+ */
+export function isObject (v: unknown) {
+  return !isNil(v) && typeof v === 'object';
+}
