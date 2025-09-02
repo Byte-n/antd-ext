@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogicalSelect, LogicalSelectValue, LogicalSelectConditionTypeEnum } from 'antd-ext';
+import { LogicalSelect, LogicalSelectValue, LogicalSelectConditionTypeEnum } from '@byte.n/antd-ext';
 
 const basicOptions = [
   {

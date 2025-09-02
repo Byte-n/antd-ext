@@ -5,7 +5,7 @@ import {
   LogicalSelectConditionTypeEnum,
   LogicalSelectRef,
   LogicalSelectValue,
-} from 'antd-ext';
+} from '@byte.n/antd-ext';
 
 const { Text } = Typography;
 

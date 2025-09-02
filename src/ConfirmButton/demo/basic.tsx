@@ -1,4 +1,4 @@
-import { ConfirmButton } from 'antd-ext';
+import { ConfirmButton } from '@byte.n/antd-ext';
 import React, { useState } from 'react';
 
 export default () => {

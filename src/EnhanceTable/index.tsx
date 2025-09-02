@@ -1,5 +1,5 @@
 import { ConfigProvider, Table, TableProps } from 'antd';
-import { isObject } from 'antd-ext/utils/object';
+import { isObject } from '../utils/object';
 import classNames from 'classnames';
 import React, { useContext, useMemo } from 'react';
 import useStyle from './style';

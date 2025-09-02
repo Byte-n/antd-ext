@@ -1,4 +1,4 @@
-import { InputRange } from 'antd-ext';
+import { InputRange } from '@byte.n/antd-ext';
 import React, { useState } from 'react';
 
 export default () => {

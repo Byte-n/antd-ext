@@ -1,5 +1,5 @@
 import { ConfigProvider, Drawer, DrawerProps } from 'antd';
-import DragIndicator from 'antd-ext/EnhanceDrawer/DragIndicator';
+import DragIndicator from './DragIndicator';
 import classNames from 'classnames';
 import React, { useCallback, useContext, useRef } from 'react';
 

@@ -6,7 +6,7 @@ import {
   LogicalSelectValue,
   LogicalSelectWidgetProps,
   TagsInput,
-} from 'antd-ext';
+} from '@byte.n/antd-ext';
 import React, { useState } from 'react';
 
 // 自定义标签组件

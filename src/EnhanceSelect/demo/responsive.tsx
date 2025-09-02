@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Space, Card, Typography } from 'antd';
-import { EnhanceSelect } from 'antd-ext';
+import { EnhanceSelect } from '@byte.n/antd-ext';
 
 const { Title, Text } = Typography;
 

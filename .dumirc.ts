@@ -4,8 +4,8 @@ import { defineThemeConfig } from 'dumi-theme-antd/dist/defineThemeConfig';
 export default defineConfig({
   outputPath: 'docs-dist',
   themeConfig: defineThemeConfig({
-    name: 'antd-ext',
-    title: 'Antd-ext',
+    name: '@byte.n/antd-ext',
+    title: '@byte.n/antd-ext',
     lastUpdated: true,
     nav: {
       'zh-CN': [{ title: '组件', link: '/components' }],
@@ -101,7 +101,7 @@ export default defineConfig({
     ],
   }),
   // themeConfig: {
-  //   name: 'antd-ext',
+  //   name: '@byte.n/antd-ext',
   //   nav: [
   //     {
   //       title: '文档',

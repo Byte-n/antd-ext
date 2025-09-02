@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EnhanceSelect, EnhanceSelectProps } from 'antd-ext';
+import { EnhanceSelect, EnhanceSelectProps } from '@byte.n/antd-ext';
 import { Tag } from 'antd';
 
 const options = [

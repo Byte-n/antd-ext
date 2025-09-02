@@ -3,7 +3,7 @@ import {
   LogicalSelect,
   LogicalSelectConditionTypeEnum,
   LogicalSelectValue,
-} from 'antd-ext';
+} from '@byte.n/antd-ext';
 import React, { useState } from 'react';
 
 const { Text, Title } = Typography;

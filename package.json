@@ -1,7 +1,16 @@
 {
-  "name": "antd-ext",
-  "version": "0.0.1",
-  "description": "A react library developed with dumi",
+  "name": "@byte.n/antd-ext",
+  "version": "1.0.0",
+  "description": "antd-ext",
+  "keywords": [
+    "antd-ext",
+    "antd",
+    "logical select"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Byte-n/antd-ext"
+  },
   "license": "MIT",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,6 +20,7 @@
   "scripts": {
     "build": "father build",
     "build:watch": "father dev",
+    "deploy": "gh-pages -d docs-dist",
     "dev": "dumi dev",
     "docs:build": "dumi build",
     "docs:preview": "dumi preview",
@@ -58,6 +68,7 @@
     "dumi-theme-antd": "^0.4.4",
     "eslint": "^8.23.0",
     "father": "^4.1.0",
+    "gh-pages": "^6.3.0",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Space, Typography } from 'antd';
-import { LogicalSelect, LogicalSelectValue, LogicalSelectOption, LogicalSelectConditionTypeEnum } from 'antd-ext';
+import { LogicalSelect, LogicalSelectValue, LogicalSelectOption, LogicalSelectConditionTypeEnum } from '@byte.n/antd-ext';
 
 const { Text } = Typography;
 

@@ -28,7 +28,7 @@ import useComponentFactory, {
 } from '../hooks/useComponentFactory';
 import useStyle from './style';
 import usePrevious from 'antd/es/typography/hooks/usePrevious';
-import { zhCN } from 'antd-ext/TagsInput/locale';
+import { zhCN } from './locale';
 
 export type TagType<T extends 'text' | 'numeric'> = T extends 'numeric'
   ? number

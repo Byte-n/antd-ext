@@ -9,7 +9,7 @@ import {
   Space,
   Typography,
 } from 'antd';
-import { type EnhanceSelectProps } from 'antd-ext';
+import { type EnhanceSelectProps } from '../EnhanceSelect';
 import { SizeType } from 'antd/es/config-provider/SizeContext';
 import { useLocale } from 'antd/es/locale';
 import classNames from 'classnames';

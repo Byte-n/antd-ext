@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Space, Typography, DatePicker, Checkbox } from 'antd';
-import { LogicalSelect, LogicalSelectValue, LogicalSelectWidgetProps, LogicalSelectConditionTypeEnum } from 'antd-ext';
+import { LogicalSelect, LogicalSelectValue, LogicalSelectWidgetProps, LogicalSelectConditionTypeEnum } from '@byte.n/antd-ext';
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;

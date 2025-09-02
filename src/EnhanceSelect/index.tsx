@@ -9,7 +9,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { unionBy } from 'antd-ext/utils/array';
+import { unionBy } from '../utils/array';
 
 export type Val = string | number | boolean;
 export type Model = undefined | 'multiple' | 'tags';

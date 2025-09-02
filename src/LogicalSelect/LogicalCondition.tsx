@@ -4,12 +4,13 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 import { Button, ConfigProvider, Flex, Tooltip } from 'antd';
-import { EnhanceInput, EnhanceSelect } from 'antd-ext';
+import EnhanceInput from '../EnhanceInput';
+import EnhanceSelect from '../EnhanceSelect';
 import {
   defaultConditionTypeOptions,
   LogicalSelectConditionTypeEnum,
   parseConditionTypeOptions,
-} from 'antd-ext/LogicalSelect/conditionType';
+} from './conditionType';
 import {
   InternalLogicalSelectValueProps,
   LogicalSelectOption,
@@ -17,8 +18,8 @@ import {
   LogicalSelectValue,
   LogicalSelectValueRaw,
   LogicalSelectWidgetProps,
-} from 'antd-ext/LogicalSelect/index';
-import { isEmpty, isNil } from 'antd-ext/utils/object';
+} from './index';
+import { isEmpty, isNil } from '../utils/object';
 import { useLocale } from 'antd/es/locale';
 import classNames from 'classnames';
 import React, {

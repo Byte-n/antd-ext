@@ -1,6 +1,6 @@
 import { Form, Input, message } from 'antd';
-import { SubmitButton } from 'antd-ext';
-import { useFormRuleBuilder } from 'antd-ext/hooks/useFormRuleBuilder';
+import { SubmitButton } from '@byte.n/antd-ext';
+import { useFormRuleBuilder } from '../../hooks/useFormRuleBuilder';
 import React, { useState } from 'react';
 
 export default () => {

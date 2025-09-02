@@ -1,4 +1,4 @@
-import { EnhanceInput } from 'antd-ext';
+import { EnhanceInput } from '@byte.n/antd-ext';
 import React, { useState } from 'react';
 
 export default () => {

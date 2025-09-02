@@ -1,5 +1,5 @@
 import { Button, ConfigProvider } from 'antd';
-import { EnhanceDrawer } from 'antd-ext';
+import { EnhanceDrawer } from '@byte.n/antd-ext';
 import { MenuOutlined, DragOutlined, SettingOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 

@@ -1,4 +1,4 @@
-import { TagsInput } from 'antd-ext';
+import { TagsInput } from '@byte.n/antd-ext';
 import React from 'react';
 import { useState } from 'react';
 
