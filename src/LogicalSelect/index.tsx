@@ -10,14 +10,8 @@ import {
   Typography,
 } from 'antd';
 import { type EnhanceSelectProps } from 'antd-ext';
-import useStyle from './style';
-import { LogicalCondition } from './LogicalCondition';
-import {
-  ConditionTypeOptionsObject,
-  getConditionDefaultValue,
-  LogicalSelectConditionTypeEnum,
-} from './conditionType';
-import { LogicalSelectDefaultWidgets } from './widget';
+import { SizeType } from 'antd/es/config-provider/SizeContext';
+import { useLocale } from 'antd/es/locale';
 import classNames from 'classnames';
 import React, {
   FC,
@@ -35,10 +29,16 @@ import React, {
   useState,
 } from 'react';
 import { cloneDeep, isNil } from '../utils/object';
+import { LogicalCondition } from './LogicalCondition';
 import LogicalSymbolSelect, { LogicalSymbol } from './LogicalSymbolSelect';
-import { useLocale } from 'antd/es/locale';
+import {
+  ConditionTypeOptionsObject,
+  getConditionDefaultValue,
+  LogicalSelectConditionTypeEnum,
+} from './conditionType';
 import { zhCN } from './locale';
-import { SizeType } from 'antd/es/config-provider/SizeContext';
+import useStyle from './style';
+import { LogicalSelectDefaultWidgets } from './widget';
 
 export interface InternalLogicalSelectValueProps {
   options:
@@ -290,7 +290,7 @@ export interface LogicalSelectProps
   prefixCls?: string;
   widgets?: InternalLogicalSelectValueProps['widgets'];
   onValidate?: (result: ValidateResult) => void;
-  size?: SizeType
+  size?: SizeType;
 }
 
 export interface ErrorItem {
@@ -428,7 +428,12 @@ export function validateTree(
   };
 
   walk(root, []);
-  return { valid: errors.length === 0, errors, errorsByPath, optionsByPath } as ValidateMeta;
+  return {
+    valid: errors.length === 0,
+    errors,
+    errorsByPath,
+    optionsByPath,
+  } as ValidateMeta;
 }
 
 const InternalLogical = (
@@ -561,7 +566,10 @@ const InternalLogical = (
     );
   }
   return wrapCSSVar(
-    <ConfigProvider componentDisabled={disabled || componentDisabled} componentSize={size}>
+    <ConfigProvider
+      componentDisabled={disabled || componentDisabled}
+      componentSize={size}
+    >
       <LogicalSelectRuntimeContext.Provider
         value={{
           getOptions: (p: number[]) => optionsByPath[p.join('.')] || [],
@@ -574,7 +582,7 @@ const InternalLogical = (
           options={options}
           className={classNames(prefixCls, hashId, cssVarCls, className)}
           widgets={widgetsObj}
-          value={realValue}
+          value={realValue!}
           onChange={onValueChange}
           removeCondition={onRemoveRootCondition}
           isRoot={true}

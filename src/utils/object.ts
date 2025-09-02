@@ -16,7 +16,7 @@ export function isEmpty(v: unknown) {
   }
 
   if (typeof v === 'object') {
-    return Object.keys(v).length === 0;
+    return Object.keys(v as object).length === 0;
   }
 
   if (typeof v === 'number') {
@@ -34,6 +34,6 @@ export function cloneDeep<T>(v: T): T {
  * is objected && !isNil
  * @param v
  */
-export function isObject (v: unknown) {
+export function isObject(v: unknown) {
   return !isNil(v) && typeof v === 'object';
 }

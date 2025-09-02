@@ -83,7 +83,7 @@ const columns = [
     key: 'action',
     width: 150,
     fixed: 'right' as const,
-    render: (_: any, record: DataType) => (
+    render: () => (
       <Space size="middle">
         <a>查看</a>
         <a>编辑</a>
@@ -97,6 +97,7 @@ const App: React.FC = () => (
     <div style={{ height: 200, display: 'flex' }}>
       <div style={{ padding: 20 }}>其他板块</div>
       <EnhanceTable
+        style={{ minWidth: 0 }}
         columns={columns}
         dataSource={data}
         scroll={{ x: 'max-content', y: 'auto' }}
@@ -110,7 +111,6 @@ const App: React.FC = () => (
         columns={columns}
         dataSource={data}
         scroll={{ x: 'max-content', y: 'auto' }}
-        pagination={false}
       />
     </div>
   </div>

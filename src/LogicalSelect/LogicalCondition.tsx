@@ -4,9 +4,12 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 import { Button, ConfigProvider, Flex, Tooltip } from 'antd';
-import { useLocale } from 'antd/es/locale';
-import { zhCN } from './locale';
 import { EnhanceInput, EnhanceSelect } from 'antd-ext';
+import {
+  defaultConditionTypeOptions,
+  LogicalSelectConditionTypeEnum,
+  parseConditionTypeOptions,
+} from 'antd-ext/LogicalSelect/conditionType';
 import {
   InternalLogicalSelectValueProps,
   LogicalSelectOption,
@@ -15,12 +18,8 @@ import {
   LogicalSelectValueRaw,
   LogicalSelectWidgetProps,
 } from 'antd-ext/LogicalSelect/index';
-import {
-  parseConditionTypeOptions,
-  defaultConditionTypeOptions,
-  LogicalSelectConditionTypeEnum,
-} from 'antd-ext/LogicalSelect/conditionType';
 import { isEmpty, isNil } from 'antd-ext/utils/object';
+import { useLocale } from 'antd/es/locale';
 import classNames from 'classnames';
 import React, {
   FC,
@@ -30,9 +29,9 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { zhCN } from './locale';
 
-export interface ConditionProps
-  extends InternalLogicalSelectValueProps {
+export interface ConditionProps extends InternalLogicalSelectValueProps {
   condition: LogicalSelectValueRaw;
   parentValue: LogicalSelectValue;
 }
@@ -70,7 +69,7 @@ export function LogicalCondition(props: ConditionProps) {
     if (Array.isArray(hierarchy)) {
       return hierarchy.length > level;
     }
-    return hierarchy > level;
+    return hierarchy! > level;
   }, [hierarchy, level]);
   const updateValue = useCallback(
     (v: unknown) => onChange({ ...condition, value: v }),
@@ -78,7 +77,9 @@ export function LogicalCondition(props: ConditionProps) {
   );
   const changeOption = useCallback(
     (v: string) => {
-      const { conditionTypeOptions } = parseConditionTypeOptions(optionInfo.conditionTypeOptions);
+      const { conditionTypeOptions } = parseConditionTypeOptions(
+        optionInfo.conditionTypeOptions,
+      );
       onChange({
         ...condition,
         key: v,
@@ -122,7 +123,9 @@ export function LogicalCondition(props: ConditionProps) {
     let compProps = optionInfo.widgetProps;
 
     if (optionInfo.conditionTypeOptions?.length) {
-      const { conditionTypeOptions: ct, configs } = parseConditionTypeOptions(optionInfo.conditionTypeOptions);
+      const { conditionTypeOptions: ct, configs } = parseConditionTypeOptions(
+        optionInfo.conditionTypeOptions,
+      );
       conditionTypeOptions = ct;
       const find = configs.find(
         (v) => v.conditionType === condition.conditionType,

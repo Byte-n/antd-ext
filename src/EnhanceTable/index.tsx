@@ -29,19 +29,16 @@ export default function <T>(props: EnhanceTableProps<T>) {
     className,
     stripe,
     prefixCls: customizePrefixCls,
-    pagination,
     ...rest
   } = props;
-  const { realScroll, scrollClass, realPagination } = useMemo<{
+  const { realScroll, scrollClass } = useMemo<{
     realScroll: EnhanceTableProps<T>['scroll'];
     scrollClass: string;
-    realPagination: EnhanceTableProps<T>['pagination'];
   }>(() => {
     const realScroll = { ...scroll };
     if (!isObject(realScroll)) {
       return {
         realScroll,
-        realPagination: pagination,
         scrollClass: '',
       };
     }
@@ -49,15 +46,13 @@ export default function <T>(props: EnhanceTableProps<T>) {
       return {
         realScroll: {
           ...realScroll,
-          y: '100%',
+          y: undefined,
         },
-        realPagination: false,
         scrollClass: 'y-auto',
       };
     }
     return {
       realScroll: scroll,
-      realPagination: pagination,
       scrollClass: '',
     };
   }, [scroll]);
@@ -74,7 +69,6 @@ export default function <T>(props: EnhanceTableProps<T>) {
     customizePrefixCls,
   );
   const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
-  console.log('realScroll:', realScroll);
   return wrapCSSVar(
     <Table
       scroll={realScroll}
@@ -86,7 +80,6 @@ export default function <T>(props: EnhanceTableProps<T>) {
         stripeClassName,
         className,
       )}
-      pagination={realPagination}
       {...rest}
     />,
   );

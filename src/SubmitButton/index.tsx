@@ -1,7 +1,13 @@
 import { Button, ButtonProps, Form, Tooltip } from 'antd';
-import { TooltipProps, TooltipRef } from 'antd/es/tooltip';
 import { useLocale } from 'antd/es/locale';
-import React, { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
+import { TooltipProps, TooltipRef } from 'antd/es/tooltip';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import { zhCN } from './locale';
 
 export interface SubmitButtonProps<T = unknown>
@@ -22,7 +28,10 @@ export interface SubmitButtonRef extends HTMLButtonElement {
  * @constructor
  */
 const SubmitButton = forwardRef<SubmitButtonRef, SubmitButtonProps<unknown>>(
-  function SubmitButton<T = unknown>(props: SubmitButtonProps<T>, ref: React.ForwardedRef<SubmitButtonRef>) {
+  function SubmitButton<T = unknown>(
+    props: SubmitButtonProps<T>,
+    ref: React.ForwardedRef<SubmitButtonRef>,
+  ) {
     const { formInitialValues, tooltipProps, children, ...rest } = props;
     const [locale] = useLocale('SubmitButton', zhCN);
     const [submittable, setSubmittable] = React.useState<boolean>(false);
@@ -48,7 +57,7 @@ const SubmitButton = forwardRef<SubmitButtonRef, SubmitButtonProps<unknown>>(
       formInstance
         .validateFields()
         .then((values) => {
-          if (formInitialValues) {
+          if (!formInitialValues) {
             setSubmittable(true);
             return;
           }

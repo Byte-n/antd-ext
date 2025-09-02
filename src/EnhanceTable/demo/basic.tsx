@@ -1,5 +1,5 @@
+import { Space } from 'antd';
 import React from 'react';
-import { Space, Button } from 'antd';
 import EnhanceTable from '../index';
 
 interface DataType {
@@ -66,7 +66,12 @@ const columns = [
             <span
               key={tag}
               style={{
-                backgroundColor: color === 'geekblue' ? '#1890ff' : color === 'green' ? '#52c41a' : '#fa541c',
+                backgroundColor:
+                  color === 'geekblue'
+                    ? '#1890ff'
+                    : color === 'green'
+                    ? '#52c41a'
+                    : '#fa541c',
                 color: '#fff',
                 padding: '2px 8px',
                 borderRadius: '4px',
@@ -94,11 +99,12 @@ const columns = [
 ];
 
 const App: React.FC = () => (
-    <EnhanceTable
-      columns={columns}
-      dataSource={data}
-      pagination={false}
-    />
+  <EnhanceTable
+    columns={columns}
+    dataSource={data}
+    pagination={false}
+    scroll={{ y: 'auto' }}
+  />
 );
 
 export default App;

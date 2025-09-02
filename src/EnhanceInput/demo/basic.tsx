@@ -1,5 +1,5 @@
 import { EnhanceInput } from 'antd-ext';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export default () => {
   const [value, setValue] = useState('');
@@ -17,9 +17,7 @@ export default () => {
         onValueChange={handleValueChange}
         style={{ width: 300 }}
       />
-      <div style={{ marginTop: 16 }}>
-        当前值: {value || '空'}
-      </div>
+      <div style={{ marginTop: 16 }}>当前值: {value || '空'}</div>
     </div>
   );
 };

@@ -1,3 +1,5 @@
+import { unit } from '@ant-design/cssinjs';
+import { CSSObject } from '@ant-design/cssinjs/es/hooks/useStyleRegister';
 import {
   FullToken,
   GenerateStyle,
@@ -5,20 +7,20 @@ import {
   GetDefaultToken,
   mergeToken,
 } from 'antd/es/theme/internal';
-import { CSSObject } from '@ant-design/cssinjs/es/hooks/useStyleRegister';
 
 export interface ComponentToken {
-  stripeBgColor?: string;
-  headBgColor?: string;
-  headZIndex?: number;
+  stripeBgColor: string;
+  headBgColor: string;
+  headZIndex: number;
   stripeHoverBgColor?: string;
-  scrollbarWidth?: CSSObject['scrollbarWidth'];
-  scrollbarColor?: string;
-  scrollbarBgColor?: string;
-  scrollbarGutter?: string;
+  scrollbarWidth: CSSObject['scrollbarWidth'];
+  scrollbarColor: string;
+  scrollbarBgColor: string;
+  scrollbarGutter: string;
+  paginationMarginBlock: string | number;
 }
 
-export interface EnhanceTableToken extends FullToken<'EnhanceTable'> { }
+export interface EnhanceTableToken extends FullToken<'EnhanceTable'> {}
 
 const createStyle: GenerateStyle<EnhanceTableToken> = (
   token: FullToken<'EnhanceTable'>,
@@ -34,6 +36,7 @@ const createStyle: GenerateStyle<EnhanceTableToken> = (
     scrollbarColor,
     scrollbarBgColor,
     scrollbarGutter,
+    paginationMarginBlock,
   } = token;
   return {
     [componentCls as string]: {
@@ -48,9 +51,12 @@ const createStyle: GenerateStyle<EnhanceTableToken> = (
 
           [`${antCls}-spin-container`]: {
             height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
 
             [`${antCls}-table`]: {
               height: '100%',
+              minHeight: 0,
 
               [`${antCls}-table-container`]: {
                 height: '100%',
@@ -59,7 +65,7 @@ const createStyle: GenerateStyle<EnhanceTableToken> = (
               },
 
               [`${antCls}-table-content`]: {
-                overflowY: 'auto',
+                overflowY: 'auto !important' as 'auto',
                 flex: '1',
                 minHeight: 0,
               },
@@ -76,6 +82,10 @@ const createStyle: GenerateStyle<EnhanceTableToken> = (
                 'z-index': `${headZIndex}`,
                 flexShrink: 0,
               },
+            },
+
+            [`${antCls}-pagination`]: {
+              marginBlock: unit(paginationMarginBlock),
             },
           },
         },
@@ -94,9 +104,9 @@ const createStyle: GenerateStyle<EnhanceTableToken> = (
           },
         },
         [`&${antCls}-table-wrapper ${antCls}-table-tbody ${antCls}-table-row >${antCls}-table-cell-row-hover`]:
-        {
-          background: stripeHoverBgColor,
-        },
+          {
+            background: stripeHoverBgColor,
+          },
       },
 
       [`${antCls}-table`]: {
@@ -121,6 +131,7 @@ const prepareComponentToken: GetDefaultToken<'EnhanceTable'> = (token) => ({
   scrollbarColor: token.colorTextPlaceholder,
   scrollbarBgColor: 'transparent',
   scrollbarGutter: 'stable',
+  paginationMarginBlock: 8,
 });
 
 export default genStyleHooks(
