@@ -2,7 +2,7 @@ import { defineConfig } from 'dumi';
 import { defineThemeConfig } from 'dumi-theme-antd/dist/defineThemeConfig';
 
 export default defineConfig({
-  base: '/antd-ext/',
+  base: process.env.NODE_ENV === 'production' ? '/antd-ext/' : '/',
   outputPath: 'docs-dist',
   publicPath: process.env.NODE_ENV === 'production' ? '/antd-ext/' : '/',
   themeConfig: defineThemeConfig({
