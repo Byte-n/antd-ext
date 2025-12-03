@@ -117,6 +117,9 @@ const createStyle: GenerateStyle<LogicalSelectToken> = (
         padding: '2px 4px !important',
       },
     },
+    [`${componentCls}-condition-option-popup`]: {
+      minWidth: 230,
+    }
   };
 };
 

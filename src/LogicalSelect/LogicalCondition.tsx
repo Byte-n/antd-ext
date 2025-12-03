@@ -132,16 +132,16 @@ export function LogicalCondition(props: ConditionProps) {
         (v) => v.conditionType === condition.conditionType,
       );
       if (find) {
-        Comp =
-          typeof find.widget === 'string' ? widgets[find.widget] : find.widget;
-        if (!Comp) {
-          console.error(
-            '[LogicalCondition] 组件不存在 condition = ',
-            condition,
-            'conditionTypeOptions 参数错误：',
-            optionInfo.conditionTypeOptions,
-          );
-        }
+        Comp = typeof find.widget === 'string' ? widgets[find.widget] : find.widget;
+        //if (!Comp) {
+        //  console.debug(
+        //    '[LogicalCondition] 组件不存在 condition = ',
+        //    condition,
+        //    'conditionTypeOptions 参数错误：',
+        //    optionInfo.conditionTypeOptions,
+        //    '\n',
+        //  );
+        //}
         if (find.widgetProps) {
           compProps = { ...compProps, ...find.widgetProps };
         }
@@ -158,9 +158,13 @@ export function LogicalCondition(props: ConditionProps) {
     }
 
     if (!Comp) {
-      if (condition.key) {
-        console.error('[LogicalCondition] 组件不存在 condition = ', condition);
-      }
+      //if (condition.key) {
+        //console.debug(
+        //  '[LogicalCondition] 组件不存在 condition = ',
+        //  condition,
+        //  '\n',
+        //);
+      //}
       Comp = widgets.Input;
     }
     return { Comp, conditionTypeOptions, compProps };
@@ -168,6 +172,19 @@ export function LogicalCondition(props: ConditionProps) {
 
   const { componentDisabled } = ConfigProvider.useConfig();
   const { componentSize } = ConfigProvider.useConfig();
+
+  const conditionTypeClassNames = useMemo(
+    () => ({
+      popup: { root: `${prefixCls}-condition-type-popup` },
+    }),
+    [prefixCls],
+  );
+  const conditionOptionClassNames = useMemo(
+    () => ({
+      popup: { root: `${prefixCls}-condition-option-popup` },
+    }),
+    [prefixCls],
+  );
   return (
     <Flex
       gap={3}
@@ -178,7 +195,6 @@ export function LogicalCondition(props: ConditionProps) {
       onMouseLeave={() => !componentDisabled && setVisButton(false)}
     >
       <EnhanceSelect<string, undefined>
-        dropdownStyle={{ minWidth: 230 }}
         {...optionInfo?.selectProps}
         className={classNames(
           `${prefixCls}-option`,
@@ -190,6 +206,7 @@ export function LogicalCondition(props: ConditionProps) {
         options={optionList}
         value={condition.key}
         onChange={changeOption}
+        classNames={conditionOptionClassNames}
       />
       <EnhanceSelect<LogicalSelectConditionTypeEnum, undefined>
         showSearch={false}
@@ -200,7 +217,7 @@ export function LogicalCondition(props: ConditionProps) {
         size={componentSize}
         value={conditionType}
         options={conditionTypeOptions}
-        popupClassName={`${prefixCls}-condition-type-popup`}
+        classNames={conditionTypeClassNames}
         placeholder={condition.key ? null : locale.selectFieldFirst}
       />
       {conditionType ? (
