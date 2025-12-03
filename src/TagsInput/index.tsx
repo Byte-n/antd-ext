@@ -87,7 +87,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
     'tags-input',
     customizePrefixCls,
   );
-  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
+  const [hashId, cssVarCls] = useStyle(prefixCls);
 
   // 判断是否为受控模式
   const isControlled = value !== undefined;
@@ -195,6 +195,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
       if (!ids) {
         return;
       }
+      //noinspection SuspiciousTypeOfGuard
       let list = typeof realValue === 'string' ? ids : [...realValue, ...ids];
       list = Array.from(new Set(list));
       if (realValue.length >= maxCount) {
@@ -262,44 +263,48 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
       type,
     });
   }, [updateTags, realValue, maxCount, type]);
-  return wrapCSSVar(
+  return (
     <Flex
       align="center"
       wrap="nowrap"
       className={classNames(prefixCls, hashId, cssVarCls, size, className)}
       style={style}
     >
-      {realValue.length > 0 &&
-        displayTags.map((tag, index) => {
-          // 处理省略号对象
-          if (typeof tag === 'object' && tag.type === 'ellipsis') {
-            return (
-              <Tooltip key={`ellipsis-${index}`} title={locale.batchInput}>
-                <Tag
-                  color="blue"
-                  className="tag-item ellipsis-tag"
-                  onClick={showEditModal}
-                >
-                  {locale.ellipsisCount.replace(
-                    '${count}',
-                    tag.count.toString(),
-                  )}
-                </Tag>
-              </Tooltip>
-            );
-          }
+      <Flex className={`${prefixCls}-tags`}>
+        {realValue.length > 0 &&
+          displayTags.map((tag, index) => {
+            // 处理省略号对象
+            if (typeof tag === 'object' && tag.type === 'ellipsis') {
+              return (
+                <Tooltip key={`ellipsis-${index}`} title={locale.batchInput}>
+                  <Tag
+                    color="blue"
+                    className={`${prefixCls}-tag-item ${prefixCls}-ellipsis-tag`}
+                    onClick={showEditModal}
+                    variant='outlined'
+                  >
+                    {locale.ellipsisCount.replace(
+                      '${count}',
+                      tag.count.toString(),
+                    )}
+                  </Tag>
+                </Tooltip>
+              );
+            }
 
-          return (
-            <Tag
-              key={`${tag}-${index}`}
-              closable
-              onClose={() => removeTag(tag as TagType<T>)}
-              className="tag-item"
-            >
-              {String(tag)}
-            </Tag>
-          );
-        })}
+            return (
+              <Tag
+                key={`${tag}-${index}`}
+                closable
+                onClose={() => removeTag(tag as TagType<T>)}
+                className={`${prefixCls}-tag-item`}
+                variant='outlined'
+              >
+                {String(tag)}
+              </Tag>
+            );
+          })}
+      </Flex>
 
       <Tooltip
         title={inputTooltipTitle}
@@ -309,7 +314,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
         <Input
           {...inputProps}
           size={size}
-          className="field"
+          className={`${prefixCls}-field`}
           value={currentInput}
           onChange={(e) => setCurrentInput(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -343,7 +348,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
         />
       </Tooltip>
       {comp}
-    </Flex>,
+    </Flex>
   );
 }
 
@@ -489,7 +494,7 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
       onCancel={handleConfirm.bind(null, false)}
       width={600}
     >
-      <Space direction="vertical" size={size} style={{ width: '100%' }}>
+      <Space orientation="vertical" size={size} style={{ width: '100%' }}>
         <Input.TextArea
           allowClear
           autoSize={{ minRows: 10, maxRows: 20 }}
@@ -499,7 +504,7 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
         />
         {error && <Typography.Text type="danger">{error}</Typography.Text>}
         <Space
-          direction="vertical"
+          orientation="vertical"
           className="modal-footer"
           style={{ width: '100%' }}
         >

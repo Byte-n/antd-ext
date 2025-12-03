@@ -15,9 +15,9 @@ export default function LoadingIndicatorCircusBall(
   const { size = 'default' } = props;
   const { getPrefixCls } = useContext(ConfigContext);
   const prefixCls = getPrefixCls('LoadingIndicatorCircusBall');
-  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
+  const [hashId, cssVarCls] = useStyle(prefixCls);
 
-  return wrapCSSVar(
+  return (
     <Flex justify="center" align="center" className="size-full">
       <div className={classNames(prefixCls, cssVarCls, hashId, size)}>
         <div id="contain">
@@ -41,6 +41,6 @@ export default function LoadingIndicatorCircusBall(
           </div>
         </div>
       </div>
-    </Flex>,
+    </Flex>
   );
 }

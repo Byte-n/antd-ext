@@ -1,4 +1,3 @@
-import { unit } from '@ant-design/cssinjs';
 import {
   FullToken,
   GenerateStyle,
@@ -53,7 +52,7 @@ const createStyle: GenerateStyle<LoadingIndicatorCircusBallToken> = (
       '--ball-translate-x': '-50px',
       '--ball-translate-y': '-60.5px',
       '--ball-scale': '0.85',
-      
+
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'end',
@@ -70,7 +69,7 @@ const createStyle: GenerateStyle<LoadingIndicatorCircusBallToken> = (
         '--ball-translate-x': '-10px',
         '--ball-translate-y': '-13.5px',
         '--ball-scale': '0.85',
-        
+
         height: 'calc((var(--ball-translate-y) * -1) + var(--ball-size))',
         width: 'calc((var(--ball-translate-x) * -1) + var(--ball-size))',
         margin: 'var(--ball-size)',
@@ -102,7 +101,7 @@ const createStyle: GenerateStyle<LoadingIndicatorCircusBallToken> = (
         '--ball-translate-x': '-80px',
         '--ball-translate-y': '-90.5px',
         '--ball-scale': '0.85',
-        
+
         height: 'calc((var(--ball-translate-y) * -1) + var(--ball-size))',
         width: 'calc((var(--ball-translate-x) * -1) + var(--ball-size))',
         margin: 'var(--ball-size)',
@@ -245,7 +244,7 @@ const createStyle: GenerateStyle<LoadingIndicatorCircusBallToken> = (
           '--ball-translate-x': '-10px',
           '--ball-translate-y': '-13.5px',
           '--ball-scale': '0.85',
-          
+
           height: 'calc((var(--ball-translate-y) * -1) + var(--ball-size))',
           width: 'calc((var(--ball-translate-x) * -1) + var(--ball-size))',
           margin: 'var(--ball-size)',
@@ -288,7 +287,7 @@ const createStyle: GenerateStyle<LoadingIndicatorCircusBallToken> = (
           '--ball-translate-x': '-80px',
           '--ball-translate-y': '-90.5px',
           '--ball-scale': '0.85',
-          
+
           height: 'calc((var(--ball-translate-y) * -1) + var(--ball-size))',
           width: 'calc((var(--ball-translate-x) * -1) + var(--ball-size))',
           margin: 'var(--ball-size)',
@@ -326,7 +325,7 @@ const createStyle: GenerateStyle<LoadingIndicatorCircusBallToken> = (
   };
 };
 
-const prepareComponentToken: GetDefaultToken<'LoadingIndicatorCircusBall'> = (token) => ({
+const prepareComponentToken: GetDefaultToken<'LoadingIndicatorCircusBall'> = (_token) => ({
   ballShadowColor: 'rgba(0, 0, 0, 0.1)',
   ball1Color: '#397BF9',
   ball2Color: '#F4B400',

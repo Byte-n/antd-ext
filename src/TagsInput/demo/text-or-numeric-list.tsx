@@ -10,9 +10,9 @@ const TextOrNumericListDemo: React.FC = () => {
   const [value3, setValue3] = useState<string | number[]>('');
 
   return (
-    <Space direction="vertical" size="large" style={{ width: '100%' }}>
+    <Space orientation="vertical" size="large" style={{ width: '100%' }}>
       <Card title="TextOrNumericList 使用示例" size="small">
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
           <div>
             <Title level={5}>基础用法</Title>
             <Paragraph>
@@ -78,7 +78,7 @@ const TextOrNumericListDemo: React.FC = () => {
 
           <div>
             <Title level={5}>使用说明</Title>
-            <Space direction="vertical" size="small">
+            <Space orientation="vertical" size="small">
               <Text>
                 • 输入文本时：直接输入任意文本内容
               </Text>

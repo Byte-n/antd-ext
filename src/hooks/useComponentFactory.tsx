@@ -1,4 +1,4 @@
-import usePatchElement from 'antd/es/_util/hooks/usePatchElement';
+import { usePatchElement } from 'antd/es/_util/hooks';
 import React, { useCallback } from 'react';
 
 interface ElementsHolderRef {

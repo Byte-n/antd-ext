@@ -34,6 +34,9 @@ export interface ComponentToken {
   fontSizeMD: number;
   /** 大尺寸字体大小 */
   fontSizeLG: number;
+  tagsGapSm: number;
+  tagsGapMd: number;
+  tagsGapLg: number;
 }
 
 export interface TagsInputToken extends FullToken<'TagsInput'> {}
@@ -58,6 +61,9 @@ const createStyle: GenerateStyle<TagsInputToken> = (
     controlHeightLG,
     fontSizeSM,
     fontSizeLG,
+    tagsGapLg,
+    tagsGapMd,
+    tagsGapSm,
   } = token;
 
   return {
@@ -70,8 +76,12 @@ const createStyle: GenerateStyle<TagsInputToken> = (
       backgroundColor: colorBgContainer,
       minHeight: unit(controlHeightMD),
 
+      [`${componentCls}-tags`]: {
+        gap: unit(tagsGapMd),
+      },
+
       // 标签样式
-      '.tag-item': {
+      [`${componentCls}-tag-item`]: {
         maxWidth: unit(tagMaxWidth),
         height: '100%',
         overflow: 'hidden',
@@ -80,13 +90,13 @@ const createStyle: GenerateStyle<TagsInputToken> = (
       },
 
       // 省略号标签样式
-      '.ellipsis-tag': {
+      [`${componentCls}-ellipsis-tag`]: {
         cursor: 'pointer',
         color: colorPrimary,
       },
 
       // 输入框样式
-      '.field': {
+      [`${componentCls}-field`]: {
         flex: 1,
         border: 'none',
         boxShadow: 'none',
@@ -107,11 +117,14 @@ const createStyle: GenerateStyle<TagsInputToken> = (
         minHeight: unit(controlHeightSM),
         paddingLeft: unit(paddingSM),
         paddingRight: unit(paddingSM),
-        paddingTop: unit(paddingSM/2),
-        paddingBottom: unit(paddingSM/2),
+        paddingTop: unit(paddingSM / 2),
+        paddingBottom: unit(paddingSM / 2),
 
-        '.field': {
+        [`${componentCls}-field`]: {
           fontSize: fontSizeSM,
+        },
+        [`${componentCls}-tags`]: {
+          gap: unit(tagsGapSm),
         },
       },
 
@@ -121,12 +134,15 @@ const createStyle: GenerateStyle<TagsInputToken> = (
         paddingLeft: unit(paddingLG),
         paddingRight: unit(paddingLG),
 
-        '.field': {
+        [`${componentCls}-field`]: {
           fontSize: fontSizeLG,
+        },
+        [`${componentCls}-tags`]: {
+          gap: unit(tagsGapLg),
         },
       },
     },
-  }
+  };
 };
 
 const prepareComponentToken: GetDefaultToken<'TagsInput'> = () => ({
@@ -144,6 +160,9 @@ const prepareComponentToken: GetDefaultToken<'TagsInput'> = () => ({
   fontSizeSM: 12,
   fontSizeMD: 14,
   fontSizeLG: 16,
+  tagsGapLg: 6,
+  tagsGapMd: 4,
+  tagsGapSm: 2,
 });
 
 export default genStyleHooks(
