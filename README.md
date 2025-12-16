@@ -4,6 +4,8 @@
 
 一个基于 dumi 构建、对 Ant Design 进行增强与补充的 React 组件库。兼容 React 16 ~ 19，遵循 Ant Design 设计规范，支持国际化与主题定制，旨在提升开发效率与体验。
 
+ant V6 版本：https://github.com/Byte-n/antd-ext/tree/v6
+
 ## 特性
 
 - 增强现有 antd 组件的能力与开发体验（如 `Table` 自动高度、斑马纹等）
