@@ -1,42 +1,17 @@
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import {
-  App,
-  Button,
-  ConfigProvider,
-  Flex,
-  Input,
-  InputProps,
-  Modal,
-  Space,
-  Tag,
-  Tooltip,
-  Typography,
-} from 'antd';
+import { App, Button, ConfigProvider, Flex, Input, InputProps, Modal, Space, Tag, Tooltip, Typography } from 'antd';
 import { SizeType } from 'antd/es/config-provider/SizeContext';
 import { useLocale } from 'antd/es/locale';
-import classNames from 'classnames';
-import React, {
-  ClipboardEventHandler,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import useComponentFactory, {
-  UseComponentProps,
-} from '../hooks/useComponentFactory';
-import useStyle from './style';
 import usePrevious from 'antd/es/typography/hooks/usePrevious';
+import classNames from 'classnames';
+import React, { ClipboardEventHandler, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import useRenderModal from '../hooks/useRenderModal';
 import { zhCN } from './locale';
+import useStyle from './style';
 
-export type TagType<T extends 'text' | 'numeric'> = T extends 'numeric'
-  ? number
-  : string;
+export type TagType<T extends 'text' | 'numeric'> = T extends 'numeric' ? number : string;
 
-type DisplayTag<T extends 'text' | 'numeric'> =
-  | TagType<T>
-  | { type: 'ellipsis'; count: number };
+type DisplayTag<T extends 'text' | 'numeric'> = TagType<T> | { type: 'ellipsis'; count: number };
 
 export interface TagsInputProps<T extends 'text' | 'numeric' = 'text'> {
   className?: string;
@@ -48,10 +23,7 @@ export interface TagsInputProps<T extends 'text' | 'numeric' = 'text'> {
   maxCount?: number;
   maxDisplayCount?: number;
   type?: T;
-  inputProps?: Omit<
-    InputProps,
-    'value' | 'onChange' | 'onKeyDown' | 'placeholder' | 'suffix' | 'size'
-  >;
+  inputProps?: Omit<InputProps, 'value' | 'onChange' | 'onKeyDown' | 'placeholder' | 'suffix' | 'size'>;
   prefixCls?: string;
   size?: SizeType;
 }
@@ -61,9 +33,7 @@ export interface TagsInputProps<T extends 'text' | 'numeric' = 'text'> {
  * @param props
  * @constructor
  */
-function TagsInput<T extends 'text' | 'numeric' = 'text'>(
-  props: TagsInputProps<T>,
-) {
+function TagsInput<T extends 'text' | 'numeric' = 'text'>(props: TagsInputProps<T>) {
   const [locale] = useLocale('TagsInput', zhCN);
   const {
     className,
@@ -80,22 +50,17 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
     size,
   } = props;
 
-  const [renderModal, comp] = useComponentFactory();
+  const { renderModal, holder } = useRenderModal();
 
   const configContext = useContext(ConfigProvider.ConfigContext);
-  const prefixCls = configContext.getPrefixCls(
-    'tags-input',
-    customizePrefixCls,
-  );
+  const prefixCls = configContext.getPrefixCls('tags-input', customizePrefixCls);
   const [hashId, cssVarCls] = useStyle(prefixCls);
 
   // 判断是否为受控模式
   const isControlled = value !== undefined;
 
   // 状态管理
-  const [inputValue, setInputValue] = useState<TagType<T>[]>(
-    defaultValue as TagType<T>[],
-  );
+  const [inputValue, setInputValue] = useState<TagType<T>[]>(defaultValue as TagType<T>[]);
   const [currentInput, setCurrentInput] = useState<string>('');
   const [inputTooltipTitle, setInputTooltipTitle] = useState<string>('');
 
@@ -142,16 +107,12 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
       }
 
       if (realValue.includes(tagValue)) {
-        setInputTooltipTitle(
-          locale.duplicateItem.replace('${item}', currentInput),
-        );
+        setInputTooltipTitle(locale.duplicateItem.replace('${item}', currentInput));
         return false;
       }
 
       if (realValue.length >= maxCount) {
-        setInputTooltipTitle(
-          locale.maxCountLimit.replace('${maxCount}', maxCount.toString()),
-        );
+        setInputTooltipTitle(locale.maxCountLimit.replace('${maxCount}', maxCount.toString()));
         return false;
       }
 
@@ -175,11 +136,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
         e.preventDefault();
         e.stopPropagation();
         return false;
-      } else if (
-        e.key === 'Backspace' &&
-        !currentInput &&
-        realValue.length > 0
-      ) {
+      } else if (e.key === 'Backspace' && !currentInput && realValue.length > 0) {
         // 当输入为空且存在 Tags 时，按下回退键删除最后一个 Tag
         const lastTag = realValue[realValue.length - 1];
         removeTag(lastTag);
@@ -199,12 +156,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
       let list = typeof realValue === 'string' ? ids : [...realValue, ...ids];
       list = Array.from(new Set(list));
       if (realValue.length >= maxCount) {
-        setInputTooltipTitle(
-          locale.maxCountLimitIgnore.replace(
-            '${maxCount}',
-            maxCount.toString(),
-          ),
-        );
+        setInputTooltipTitle(locale.maxCountLimitIgnore.replace('${maxCount}', maxCount.toString()));
         list = list.slice(0, maxCount);
       }
       updateTags(list);
@@ -223,9 +175,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
   const displayTags = useMemo((): DisplayTag<T>[] => {
     if (maxDisplayCount === 0) {
       // 当 maxDisplayCount 为 0 时，只显示省略号
-      return realValue.length > 0
-        ? [{ type: 'ellipsis', count: realValue.length }]
-        : [];
+      return realValue.length > 0 ? [{ type: 'ellipsis', count: realValue.length }] : [];
     }
 
     if (realValue.length <= maxDisplayCount) {
@@ -237,11 +187,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
     const hiddenCount = realValue.length - maxDisplayCount;
     const lastTag = realValue[realValue.length - 1];
 
-    return [
-      ...realValue.slice(0, visibleCount),
-      { type: 'ellipsis', count: hiddenCount },
-      lastTag,
-    ];
+    return [...realValue.slice(0, visibleCount), { type: 'ellipsis', count: hiddenCount }, lastTag];
   }, [realValue, maxDisplayCount]);
 
   // 自动清除 Tooltip 提示
@@ -281,12 +227,9 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
                     color="blue"
                     className={`${prefixCls}-tag-item ${prefixCls}-ellipsis-tag`}
                     onClick={showEditModal}
-                    variant='outlined'
+                    variant="outlined"
                   >
-                    {locale.ellipsisCount.replace(
-                      '${count}',
-                      tag.count.toString(),
-                    )}
+                    {locale.ellipsisCount.replace('${count}', tag.count.toString())}
                   </Tag>
                 </Tooltip>
               );
@@ -298,7 +241,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
                 closable
                 onClose={() => removeTag(tag as TagType<T>)}
                 className={`${prefixCls}-tag-item`}
-                variant='outlined'
+                variant="outlined"
               >
                 {String(tag)}
               </Tag>
@@ -306,11 +249,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
           })}
       </Flex>
 
-      <Tooltip
-        title={inputTooltipTitle}
-        open={Boolean(inputTooltipTitle)}
-        placement="topLeft"
-      >
+      <Tooltip title={inputTooltipTitle} open={Boolean(inputTooltipTitle)} placement="topLeft">
         <Input
           {...inputProps}
           size={size}
@@ -324,21 +263,11 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
             <Space size={size}>
               {realValue.length > 0 && (
                 <Tooltip title={locale.clearAll}>
-                  <Button
-                    type="text"
-                    size="small"
-                    icon={<DeleteOutlined />}
-                    onClick={clearAll}
-                  />
+                  <Button type="text" size="small" icon={<DeleteOutlined />} onClick={clearAll} />
                 </Tooltip>
               )}
               <Tooltip title={locale.batchInput}>
-                <Button
-                  type="text"
-                  size="small"
-                  icon={<EditOutlined />}
-                  onClick={showEditModal}
-                />
+                <Button type="text" size="small" icon={<EditOutlined />} onClick={showEditModal} />
               </Tooltip>
               <Typography.Text type="secondary">
                 {realValue?.length}/{maxCount}
@@ -347,7 +276,7 @@ function TagsInput<T extends 'text' | 'numeric' = 'text'>(
           }
         />
       </Tooltip>
-      {comp}
+      {holder}
     </Flex>
   );
 }
@@ -357,23 +286,16 @@ export default TagsInput;
 /**
  * 批量输入弹窗
  */
-function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
-  props: UseComponentProps & {
-    onFinished?: (data: TagType<T>[]) => void; // 完成时回调，传入Tag数组
-    defaultValue?: TagType<T>[]; // 默认Tag数组
-    maxCount?: number; // 最大Tag数量
-    type?: T; // 输入类型
-    size?: SizeType;
-  },
-) {
+function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(props: {
+  onFinished?: (data: TagType<T>[]) => void; // 完成时回调，传入Tag数组
+  defaultValue?: TagType<T>[]; // 默认Tag数组
+  maxCount?: number; // 最大Tag数量
+  type?: T; // 输入类型
+  size?: SizeType;
+  onOk?: VoidFunction;
+}) {
   const [locale] = useLocale('TagsInput', zhCN);
-  const {
-    onClose,
-    onFinished,
-    maxCount = 200,
-    type = 'text' as T,
-    size,
-  } = props;
+  const { onOk, onFinished, maxCount = 200, type = 'text' as T, size } = props;
   const { message } = App.useApp();
   const [error, setError] = useState<string | null>();
   const [data, setData] = useState<TagType<T>[]>([]);
@@ -381,8 +303,7 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
   const [rowCount, setRowCount] = useState(0);
 
   // 动态生成占位符文本
-  const typeHint =
-    type === 'numeric' ? locale.numericTypeHint : locale.textTypeHint;
+  const typeHint = type === 'numeric' ? locale.numericTypeHint : locale.textTypeHint;
   const dynamicPlaceholder = locale.dynamicPlaceholder
     .replace('${typeHint}', typeHint)
     .replace('${maxCount}', maxCount.toString());
@@ -391,24 +312,22 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
     (showTips?: boolean) => {
       if (!showTips) {
         onFinished?.(data.filter((v, i, arr) => arr.indexOf(v) === i));
-        onClose();
+        onOk?.();
         return;
       }
 
       // 获取重复的项目
       const repeat = data.filter((v, i, arr) => arr.indexOf(v) !== i);
       if (repeat.length) {
-        message.warning(
-          locale.duplicateItemRemoved.replace('${items}', repeat.join(',')),
-        );
+        message.warning(locale.duplicateItemRemoved.replace('${items}', repeat.join(',')));
         check(data.filter((v, i, arr) => arr.indexOf(v) === i).join('\n'));
         return;
       }
 
       onFinished?.(data);
-      onClose();
+      onOk?.();
     },
-    [data, onFinished, onClose, message],
+    [data, onFinished, onOk, message],
   );
 
   const check = useCallback(
@@ -438,10 +357,7 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
 
         if (invalidIndex !== -1) {
           hasError = true;
-          errorMessage = locale.invalidNumberRow.replace(
-            '${text}',
-            numRows[invalidIndex].text,
-          );
+          errorMessage = locale.invalidNumberRow.replace('${text}', numRows[invalidIndex].text);
           setText(inputText);
         } else {
           processedRows = numRows.map((v) => v.num) as TagType<T>[];
@@ -459,15 +375,8 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
       }
 
       if (rows.length > maxCount) {
-        setError(
-          locale.maxCountLimitTruncated.replace(
-            '${maxCount}',
-            maxCount.toString(),
-          ),
-        );
-        setText(
-          rows.slice(0, maxCount).join('\n') + (lastChar === '\n' ? '\n' : ''),
-        );
+        setError(locale.maxCountLimitTruncated.replace('${maxCount}', maxCount.toString()));
+        setText(rows.slice(0, maxCount).join('\n') + (lastChar === '\n' ? '\n' : ''));
         processedRows = processedRows.slice(0, maxCount);
       } else {
         setError(null);
@@ -503,11 +412,7 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
           onChange={(e) => check(e.target.value)}
         />
         {error && <Typography.Text type="danger">{error}</Typography.Text>}
-        <Space
-          orientation="vertical"
-          className="modal-footer"
-          style={{ width: '100%' }}
-        >
+        <Space orientation="vertical" className="modal-footer" style={{ width: '100%' }}>
           <Typography.Text>
             {locale.rowsCountInfo
               .replace('${rows}', locale.rows)
@@ -516,9 +421,7 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
           </Typography.Text>
           <Flex justify="end">
             <Space size={size}>
-              <Button onClick={handleConfirm.bind(null, false)}>
-                {locale.cancel}
-              </Button>
+              <Button onClick={handleConfirm.bind(null, false)}>{locale.cancel}</Button>
               <Button type="primary" onClick={handleConfirm.bind(null, true)}>
                 {locale.confirm}
               </Button>
@@ -532,11 +435,7 @@ function BatchInputModal<T extends 'text' | 'numeric' = 'text'>(
 
 export type TextOrNumericListValue = number[] | string;
 
-interface TextOrNumericListProps
-  extends Omit<
-    InputProps,
-    'value' | 'defaultValue' | 'onChange'  | 'onKeyDown'
-  > {
+interface TextOrNumericListProps extends Omit<InputProps, 'value' | 'defaultValue' | 'onChange' | 'onKeyDown'> {
   value?: TextOrNumericListValue;
   defaultValue?: TextOrNumericListValue;
   onChange?: (v: TextOrNumericListValue) => void;
@@ -566,9 +465,7 @@ function TextOrNumericList(props: TextOrNumericListProps) {
     ...rest
   } = props;
 
-  const [inputValue, setInputValue] = useState<TextOrNumericListValue>(
-    defaultValue || '',
-  );
+  const [inputValue, setInputValue] = useState<TextOrNumericListValue>(defaultValue || '');
 
   const isControlled = value !== undefined;
   const realValue = isControlled ? value : inputValue;
@@ -619,19 +516,16 @@ function TextOrNumericList(props: TextOrNumericListProps) {
     [realValue],
   );
 
-  const onPaste = useCallback<ClipboardEventHandler<HTMLInputElement>>(
-    (e: React.ClipboardEvent<HTMLInputElement>) => {
-      const ids = _convertPasteText2Ids(e.clipboardData, 'numeric');
-      if (!ids) {
-        return;
-      }
-      inputOnChange(ids);
-      setTagsInputKey((prev) => prev + 1);
-      e.preventDefault();
-      return false;
-    },
-    [],
-  );
+  const onPaste = useCallback<ClipboardEventHandler<HTMLInputElement>>((e: React.ClipboardEvent<HTMLInputElement>) => {
+    const ids = _convertPasteText2Ids(e.clipboardData, 'numeric');
+    if (!ids) {
+      return;
+    }
+    inputOnChange(ids);
+    setTagsInputKey((prev) => prev + 1);
+    e.preventDefault();
+    return false;
+  }, []);
 
   const [tagsInputKey, setTagsInputKey] = useState(1);
   if (Array.isArray(realValue)) {

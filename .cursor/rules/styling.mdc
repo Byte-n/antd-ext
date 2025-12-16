@@ -17,6 +17,12 @@ alwaysApply: false
 ## 样式组织
 
 - 从`antd/es/theme/internal`中导出 `genStyleHooks` 创建样式
+- 当样式模块较复杂时，应将不同功能的样式分离到独立文件中
+  - 每个样式模块导出 `createXxxStyle` 函数
+  - 返回完整的样式对象结构 `{ [componentCls]: { ... } }`
+  - 在主样式文件（index.ts）中导入并合并这些样式函数
+  - 合并方式：先获取各模块的 `[componentCls]` 内层样式，再合并到主样式对象中
+  - 示例：Sheet 组件将 InputNumber 和 Select 样式分别放在 `inputNumberStyle.ts` 和 `selectStyle.ts` 中
 
 ## Typescript类型定义
 

@@ -102,26 +102,4 @@ export default defineConfig({
       },
     ],
   }),
-  // themeConfig: {
-  //   name: '@byte.n/antd-ext',
-  //   nav: [
-  //     {
-  //       title: '文档',
-  //       link: '/guide',
-  //     },
-  //     {
-  //       title: '组件',
-  //       link: '/components',
-  //     },
-  //     {
-  //       title: '更新日志',
-  //       link: '/changelogs',
-  //     },
-  //   ],
-  // },
-  // apiParser: {},
-  // resolve: {
-  //   // 配置入口文件路径，API 解析将从这里开始
-  //   entryFile: './src/index.tsx',
-  // },
 });

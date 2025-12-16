@@ -4,11 +4,12 @@ import 'antd/es/locale';
 import { SubmitButtonLocale } from './SubmitButton/locale/locale';
 import { ComponentToken as TagsInputComponentToken } from './TagsInput/style';
 import { ComponentToken as EnhanceDrawerComponentToken } from './EnhanceDrawer/style';
-import { ComponentToken as EnhanceSelectComponentToken } from './EnhanceSelect/style';
+import { ComponentToken as EnhanceSelectComponentToken } from '@byte.n/antd-ext/EnhancedSelect/style';
 import { ComponentToken as LogicalSelectComponentToken } from './LogicalSelect/style';
 import { ComponentToken as EnhanceTableComponentToken } from './EnhanceTable/style';
 import { TagsInputLocale } from './TagsInput/locale';
 import { LogicalSelectLocale } from './LogicalSelect/locale';
+import { ComponentToken as SheetToken } from '@byte.n/antd-ext/Sheet/style';
 
 // 扩展 antd 的 Locale 接口
 declare module 'antd/es/locale' {
@@ -24,8 +25,9 @@ declare module 'antd/es/theme/interface/components' {
   interface ComponentTokenMap {
     TagsInput?: TagsInputComponentToken;
     EnhanceDrawer?: EnhanceDrawerComponentToken;
-    EnhanceSelect?: EnhanceSelectComponentToken;
+    EnhancedSelect?: EnhanceSelectComponentToken;
     LogicalSelect?: LogicalSelectComponentToken;
     EnhanceTable?: EnhanceTableComponentToken;
+    Sheet?: SheetToken;
   }
 }

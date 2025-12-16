@@ -26,8 +26,8 @@ yarn add @byte.n/antd-ext
 - 组件:
   - ConfirmButton（确认按钮）
   - EnhanceDrawer（增强抽屉，支持拖拽调整大小）
-  - EnhanceInput（增强输入框）
-  - EnhanceSelect（增强选择器，含泛型类型、标签渲染与去重等）
+  - EnhancedInput（增强输入框）
+  - EnhancedSelect（增强选择器，含泛型类型、标签渲染与去重等）
   - EnhanceTable（增强表格，支持 `scroll.y = 'auto'` 与斑马纹）
   - InputRange（范围输入）
   - LoadingIndicatorCircusBall（加载指示器）
